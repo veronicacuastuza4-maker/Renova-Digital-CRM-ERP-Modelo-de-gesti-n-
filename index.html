@@ -1,0 +1,1254 @@
+﻿<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Renova Digital - CRM, ERP y Modelo de Gestión</title>
+<style>
+:root{--primary:#0f5132;--primary-dark:#0b3d26;--primary-2:#157347;--primary-soft:#e7f3ec;--bg:#f1f4f6;--surface:#ffffff;--border:#dde5ea;--text:#182230;--muted:#667085;--ok:#067647;--warn:#b54708;--info:#175cd3}
+*{box-sizing:border-box}body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.app{display:grid;grid-template-columns:252px 1fr;min-height:100vh}
+.sidebar{background:#0e3f29;color:#fff;padding:18px 14px;position:sticky;top:0;height:100vh;overflow:auto}
+.brand{display:flex;gap:10px;align-items:center;padding:6px 8px 16px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:8px}
+.logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#1f7a4a,#0f5132);display:flex;align-items:center;justify-content:center;font-weight:800}
+.brand h1{font-size:16px;margin:0;line-height:1.2}.brand small{display:block;opacity:.8;font-weight:500;font-size:11px}
+.nav a{display:flex;align-items:center;color:#e8f3ed;text-decoration:none;padding:10px 12px;border-radius:10px;margin:2px 0;font-size:14px}
+.nav a:hover{background:rgba(255,255,255,.08);color:#fff}.nav a.active{background:#1a5a3a;color:#fff;font-weight:600;box-shadow:inset 3px 0 0 #8fe0b8}
+.nav .group{margin:14px 10px 6px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;opacity:.65}
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;position:sticky;top:0;z-index:5}
+.topbar-left{display:flex;align-items:center;gap:12px}.topbar h2{margin:0;color:#123d2a;font-size:21px}.topbar p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.search{min-width:240px;padding:9px 12px;border:1px solid var(--border);border-radius:10px;background:#f8fafb}
+.user{font-size:13px;color:#344054;background:#f8fafb;border:1px solid var(--border);padding:8px 10px;border-radius:10px}
+.content{padding:20px 22px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 1px 2px rgba(16,24,40,.04);position:relative;overflow:hidden}
+.card.stat:before{content:"";position:absolute;right:-12px;top:-12px;width:60px;height:60px;border-radius:50%;background:var(--primary-soft)}
+.card h3{margin:0 0 6px;font-size:13px;color:var(--muted);font-weight:600}.card .value{font-size:28px;font-weight:700;color:#123d2a;line-height:1.1}.card .note{font-size:12px;color:var(--muted);margin-top:6px}.trend{font-size:12px;color:var(--ok);font-weight:600;margin-top:4px}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.panel h3{margin:0;color:#123d2a;font-size:17px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.btn{background:var(--primary);color:#fff;border:none;padding:9px 13px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.btn:hover{background:var(--primary-2)}.btn.alt{background:#fff;color:#123d2a;border:1px solid var(--border)}.btn.light{background:var(--primary-soft);color:#123d2a}
+input,select{padding:9px 11px;border:1px solid var(--border);border-radius:10px;font:inherit;background:#fff;color:var(--text)}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:14px}
+th,td{padding:11px 10px;border-bottom:1px solid var(--border);text-align:left;vertical-align:middle}
+th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em;background:#f8fafb;font-weight:600}
+tr:hover td{background:#fcfdfd}
+.pill{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600}
+.ok{background:#ecfdf3;color:var(--ok)}.warn{background:#fffaeb;color:var(--warn)}.info{background:#eff8ff;color:var(--info)}.muted{background:#f2f4f7;color:#344054}
+.grid2{display:grid;grid-template-columns:1.35fr .65fr;gap:16px}
+.menu-btn{display:none;border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 10px}
+.chart{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.bar-row{display:grid;grid-template-columns:90px 1fr 70px;gap:10px;align-items:center;font-size:13px}
+.bar-label{color:var(--muted)}.bar-track{height:12px;background:#e9eef2;border-radius:999px;overflow:hidden}.bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),#2fb36d)}
+.bar-fill.alt{background:linear-gradient(90deg,#175cd3,#53b1fd)}.bar-fill.warn{background:linear-gradient(90deg,#b54708,#f79009)}
+.bar-val{text-align:right;font-weight:600;color:#123d2a}
+.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.mini{background:#f8fafb;border:1px solid var(--border);border-radius:12px;padding:12px}.mini h4{margin:0 0 4px;font-size:12px;color:var(--muted);font-weight:600}.mini .v{font-size:20px;font-weight:700;color:#123d2a}.mini .s{font-size:12px;color:var(--muted)}
+.hbars{display:flex;align-items:flex-end;gap:10px;height:170px;padding:10px 6px 0;border-bottom:1px solid var(--border);margin-top:8px}
+.hbar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.hbar{width:100%;max-width:34px;border-radius:8px 8px 4px 4px;background:linear-gradient(180deg,#2fb36d,var(--primary));min-height:6px}
+.hbar.blue{background:linear-gradient(180deg,#53b1fd,#175cd3)}.hbar-label{font-size:11px;color:var(--muted)}.hbar-val{font-size:11px;font-weight:600;color:#123d2a}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}.dot.g{background:var(--primary)}.dot.b{background:#175cd3}.dot.o{background:#f79009}
+.trend{font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:4px;margin-top:4px}.trend.up{color:#067647}.trend.down{color:#b42318}.trend.flat{color:#667085}
+.spark{width:100%;height:46px;display:block;margin-top:8px}
+.spark path{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.spark .area{stroke:none;opacity:.12}
+.stat-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.tab{padding:8px 12px;border:1px solid var(--border);background:#fff;border-radius:10px;font-size:13px;font-weight:600;color:#344054;cursor:pointer;text-decoration:none}.tab.active{background:var(--primary-soft);color:#123d2a;border-color:#b7d9c7}
+.section{display:none}.section.active{display:block}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px}
+.line-chart{width:100%;height:180px;background:#fbfcfd;border:1px solid var(--border);border-radius:12px;padding:8px}
+.line-chart svg{width:100%;height:100%}
+.chart-note{font-size:12px;color:var(--muted);margin-top:8px}
+@media(max-width:980px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.kpi-grid{grid-template-columns:1fr}}
+.modal{display:none;position:fixed;inset:0;background:rgba(15,29,19,.45);align-items:center;justify-content:center;padding:16px;z-index:50}.modal.active{display:flex}
+.modal-card{width:100%;max-width:640px;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 20px 60px rgba(15,61,38,.18);overflow:hidden}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);background:#f8fafb}
+.modal-head h3{margin:0;color:#123d2a}.modal-body{padding:16px}
+.modal-foot{display:flex;gap:10px;justify-content:flex-end;padding:12px 16px;border-top:1px solid var(--border);background:#fbfcfd}
+.close{border:none;background:transparent;font-size:20px;cursor:pointer;color:var(--muted)}
+.form-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.form-grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:13px;color:var(--muted);font-weight:600}
+.field input,.field select,.field textarea{padding:9px 11px;border:1px solid var(--border);border-radius:10px;font:inherit}
+textarea{min-height:90px;resize:vertical}
+@media(max-width:980px){.app{grid-template-columns:1fr}.sidebar{position:fixed;left:-270px;top:0;width:252px;z-index:20;transition:.2s}.sidebar.open{left:0}.menu-btn{display:inline-block}.cards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.content{padding:16px}.search{min-width:0;width:100%}.topbar{flex-wrap:wrap}.mini-stats{grid-template-columns:1fr}.hbars{height:140px}.form-grid3,.form-grid2{grid-template-columns:1fr}}
+@media(max-width:560px){.cards{grid-template-columns:1fr}.topbar-right{width:100%}}
+
+</style>
+<style>:root{--green-900:#0d3b12;--green-800:#1b5e20;--green-700:#2e7d32;--green-600:#388e3c;--green-100:#e8f3ea;--green-50:#f1f8f2;--bg:#f4f6f5;--white:#fff;--text:#1f2933;--muted:#6b7280;--border:#d9e2ec;--danger:#b42318;--info:#175cd3;--shadow:0 4px 14px rgba(13,59,18,.08);} .card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow)} .btn{display:inline-block;background:var(--green-800);color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:600;transition:.15s} .btn:hover{background:var(--green-700)} .btn-secondary,.secondary{background:#52606d!important;color:#fff} .btn-sm{padding:6px 10px;font-size:.9rem} .muted{color:var(--muted)} /* Modelo de Gestión - Renova Digital */
+.mg-page{display:flex;flex-direction:column;gap:16px}
+.mg-hero{display:flex;justify-content:space-between;gap:20px;align-items:center;background:linear-gradient(135deg,#0b3d26 0%,#1b5e20 55%,#236b2a 100%);color:#fff;border:none}
+.mg-eyebrow{margin:0 0 6px;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:#cfe8d2;font-weight:700}
+.mg-hero h1{margin:0 0 8px;font-size:2rem;color:#fff}.mg-lead{margin:0;max-width:760px;color:#e7f3e8}
+.mg-hero-stats{display:flex;gap:10px;flex-wrap:wrap}.mg-stat{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:12px 16px;min-width:110px;text-align:center}
+.mg-stat strong{display:block;font-size:1.6rem;line-height:1}.mg-stat span{font-size:.82rem;color:#dcefe0}
+.mg-hero-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.mg-tag{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);color:#eaf5ec;padding:4px 10px;border-radius:999px;font-size:.78rem;font-weight:600}
+.mg-intro h2,.mg-flow-general h2,.mg-map-head h2,.mg-summary h2{margin:0 0 8px;color:var(--green-900)}
+.mg-intro-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:16px;align-items:start}.mg-intro p{margin:0;color:#4b5563}
+.mg-intro-pillars{display:grid;gap:10px}.mg-pillar{border:1px solid var(--border);border-radius:10px;padding:12px;background:#fbfdfb}.mg-pillar strong{display:block;color:var(--green-900);font-size:.92rem;margin-bottom:2px}.mg-pillar span{color:var(--muted);font-size:.87rem}
+.mg-flow-strip{display:flex;gap:8px;align-items:stretch;overflow-x:auto;padding:6px 0 2px}
+.mg-flow-step{min-width:150px;flex:1 0 150px;border:1px solid #cfe0d3;border-radius:12px;padding:10px;background:#f7fbf8;position:relative;appearance:none;text-align:left;font:inherit;cursor:pointer;transition:.18s}.mg-flow-step:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(16,24,40,.08);border-color:#97b8a0}.mg-flow-step:focus{outline:2px solid rgba(27,94,32,.25);outline-offset:1px}
+.mg-flow-step-final{background:#edf7ef;border-color:#9cc5a4}
+.mg-flow-n{display:inline-flex;width:24px;height:24px;border-radius:999px;align-items:center;justify-content:center;background:var(--green-800);color:#fff;font-size:.75rem;font-weight:700;margin-bottom:6px}
+.mg-flow-step strong{display:block;font-size:.88rem;color:#183022;line-height:1.3;margin-bottom:2px}.mg-flow-step small{color:var(--muted);font-size:.78rem;line-height:1.3}
+.mg-flow-arrow{display:flex;align-items:center;justify-content:center;color:#5a8b63;font-size:1.3rem;font-weight:700;flex:0 0 16px}
+.mg-map-head{margin-bottom:14px}.mg-map-head p{margin:0}
+.mg-controls{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.mg-controls-left{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.mg-hint{font-size:.9rem}
+.mg-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.9rem;color:var(--muted)}.dot{width:12px;height:12px;border-radius:3px;display:inline-block;margin-right:6px;vertical-align:middle}
+.dot.gov{background:#1849a9}.dot.val{background:#1b5e20}.dot.sup{background:#b54708}
+.mg-map{padding:18px}
+.mg-context-row{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:stretch;margin-bottom:16px}
+.mg-context{display:flex;gap:10px;align-items:center;border:1px solid var(--border);border-radius:12px;padding:12px;background:#f8fbf8}
+.mg-context-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--green-100);font-size:1.2rem}
+.mg-context strong{display:block;font-size:.95rem;color:var(--green-900)}.mg-context small{color:var(--muted);font-size:.82rem}
+.mg-context-arrow{display:flex;align-items:center;justify-content:center;color:var(--green-700);font-size:1.5rem;font-weight:700}
+.mg-band{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px}
+.mg-band-header{padding:14px 16px;border-bottom:1px solid var(--border)}.mg-band-header p{margin:6px 0 8px;color:var(--muted);font-size:.92rem}.mg-macro-btn{margin-top:2px}
+.mg-band-toggle{width:100%;background:none;border:none;padding:0;margin:0;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;color:inherit;font:inherit}
+.mg-band-title{font-size:1.1rem;font-weight:700;color:var(--green-900);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.mg-band-badge{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;padding:4px 8px;border-radius:999px;font-weight:700}
+.mg-chevron{font-size:1.1rem;color:var(--muted);transition:transform .2s}
+.mg-band.collapsed .mg-chevron{transform:rotate(-90deg)}.mg-band.collapsed .mg-band-body{display:none}.mg-band.collapsed .mg-band-header{border-bottom:none}
+.mg-band-body{padding:14px}
+.mg-gov{border-color:#bfd0ff}.mg-gov .mg-band-header{background:#f3f7ff}.mg-gov .mg-band-badge{background:#dce8ff;color:#1849a9}
+.mg-val{border-color:#bcdcc6}.mg-val .mg-band-header{background:#f2f9f4}.mg-val .mg-band-badge{background:#dcefe2;color:#1b5e20}
+.mg-sup{border-color:#f0d0b4}.mg-sup .mg-band-header{background:#fff8f1}.mg-sup .mg-band-badge{background:#fde8d2;color:#b54708}
+.mg-grid{display:grid;gap:10px}.mg-grid-5{grid-template-columns:repeat(5,1fr)}.mg-grid-4{grid-template-columns:repeat(4,1fr)}
+.mg-proc{appearance:none;width:100%;text-align:left;background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;transition:.18s;display:flex;flex-direction:column;gap:4px;min-height:108px}
+.mg-proc:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(16,24,40,.08);border-color:#97b8a0}
+.mg-proc:focus{outline:2px solid rgba(27,94,32,.25);outline-offset:1px}
+.mg-proc strong{font-size:.95rem;color:#183022;line-height:1.3}.mg-proc span:last-child{font-size:.82rem;color:var(--muted);line-height:1.35}
+.mg-code{display:inline-flex;align-items:center;justify-content:center;width:fit-content;min-width:34px;padding:2px 8px;border-radius:7px;font-size:.74rem;font-weight:700;color:#fff}
+.mg-code.gov{background:#1849a9}.mg-code.val{background:#1b5e20}.mg-code.sup{background:#b54708}
+.mg-value-chain{display:flex;gap:8px;align-items:stretch;overflow-x:auto;padding-bottom:4px}
+.mg-proc-chain{min-width:170px;max-width:210px;flex:1 0 170px}
+.mg-chain-arrow{display:flex;align-items:center;justify-content:center;color:#5a8b63;font-size:1.5rem;font-weight:700;flex:0 0 18px}
+.mg-flow-link{text-align:center;color:var(--muted);font-size:.85rem;padding:2px 0 10px}.mg-flow-link i{display:block;font-style:normal;font-size:1.1rem;color:#6b8f74}
+.mg-feedback{margin-top:12px;padding:10px 12px;border-radius:10px;background:#edf7ef;border:1px dashed #9cc5a4;color:#1b5e20;font-size:.88rem;font-weight:600}
+.mg-summary h2{margin:0 0 12px;color:var(--green-900)}.mg-rel-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.mg-rel{padding:12px;border:1px solid var(--border);border-radius:12px;background:#fbfdfb}.mg-rel strong{display:block;color:var(--green-900);margin-bottom:4px;font-size:.93rem}.mg-rel p{margin:0;color:var(--muted);font-size:.88rem}
+/* Modal */
+.mg-modal{position:fixed;inset:0;display:none;z-index:100}.mg-modal.open{display:block}
+.mg-modal-backdrop{position:absolute;inset:0;background:rgba(17,24,39,.45)}
+.mg-modal-dialog{position:relative;width:min(920px,calc(100vw - 24px));margin:3vh auto;max-height:94vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.2);border:1px solid var(--border)}
+.mg-modal-head{display:flex;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:#fff;z-index:1}
+.mg-modal-macro{margin:0 0 4px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--green-700)}
+.mg-modal-head h2{margin:0;color:var(--green-900);font-size:1.45rem}
+.mg-close{border:none;background:#f3f4f6;width:36px;height:36px;border-radius:10px;font-size:1.5rem;line-height:1;cursor:pointer;color:#374151}.mg-close:hover{background:#e5e7eb}
+.mg-modal-body{padding:18px 20px 22px}
+.mg-detail-desc{margin:0 0 14px;color:#374151}
+.mg-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mg-detail-box{border:1px solid var(--border);border-radius:12px;padding:14px;background:#fbfdfb}
+.mg-detail-box h3{margin:0 0 8px;font-size:.95rem;color:var(--green-900)}.mg-detail-box p{margin:0;color:#4b5563;font-size:.9rem}
+.mg-detail-box ul{margin:0;padding-left:18px;color:#4b5563;font-size:.9rem}.mg-detail-box li{margin:4px 0}
+.mg-detail-wide{grid-column:1/-1}
+.mg-kpis{display:flex;flex-wrap:wrap;gap:8px}.mg-kpi{background:var(--green-100);color:var(--green-900);padding:6px 10px;border-radius:999px;font-size:.82rem;font-weight:600}
+.mg-related{display:flex;flex-wrap:wrap;gap:8px}.mg-rel-btn{border:1px solid #bfd7c4;background:#fff;color:var(--green-900);padding:7px 10px;border-radius:8px;cursor:pointer;font-size:.85rem;font-weight:600}
+.mg-rel-btn:hover{background:var(--green-50)}
+@media(max-width:1100px){.mg-grid-5{grid-template-columns:repeat(3,1fr)}.mg-grid-4{grid-template-columns:repeat(2,1fr)}.mg-rel-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:860px){.mg-hero{flex-direction:column;align-items:flex-start}.mg-intro-grid{grid-template-columns:1fr}.mg-context-row{grid-template-columns:1fr;}.mg-context-arrow{transform:rotate(90deg);font-size:1.2rem}.mg-detail-grid{grid-template-columns:1fr}.mg-detail-wide{grid-column:auto}}
+@media(max-width:640px){.mg-grid-5,.mg-grid-4,.mg-rel-grid{grid-template-columns:1fr}.mg-hero h1{font-size:1.6rem}.mg-modal-dialog{width:calc(100vw - 12px);margin:6px auto;max-height:calc(100vh - 12px)}.mg-modal-head,.mg-modal-body{padding:14px}.mg-proc-chain{min-width:160px}}
+@media print{.sidebar,.topbar,.mg-controls,.mg-modal{display:none!important}.mg-page{gap:10px}.card{box-shadow:none}}
+
+
+ .mg-page{gap:16px}</style>
+<style>
+.view-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.view-tab{padding:10px 14px;border-radius:8px;border:1px solid #cfe0d3;background:#fff;color:#1b5e20;font-weight:600;cursor:pointer}
+.view-tab.active{background:#1b5e20;color:#fff;border-color:#1b5e20}
+.main-view{display:none}.main-view.active{display:block}
+</style>
+</head>
+<body><div class="app">
+<aside class="sidebar"><div class="brand"><div class="logo">RD</div><h1>Renova Digital<small>Sistema de gestión</small></h1></div><nav class="nav">
+<a href="index.html">Panel principal</a><a href="modelo_gestion.html">Modelo de Gestión</a>
+<a href="CRM_ERP_MODELO_GESTION.html" class="active">CRM / ERP / Modelo</a>
+<div class="group">Comercial</div>
+<a href="clientes.html">Clientes</a><a href="prospectos.html">Prospectos</a><a href="seguimiento.html">Seguimiento</a><a href="atencion.html">Atención al cliente</a>
+<div class="group">Operación</div>
+<a href="productos.html">Productos</a><a href="inventario.html">Inventario</a><a href="proveedores.html">Proveedores</a><a href="compras.html">Compras</a><a href="ventas.html">Ventas</a>
+<div class="group">Administración</div>
+<a href="finanzas.html">Finanzas</a><a href="reportes.html">Reportes</a>
+</nav></aside>
+<main class="main"><header class="topbar"><div class="topbar-left"><button class="menu-btn" id="menuBtn">≡</button><div><h2>CRM, ERP y Modelo de Gestión</h2><p>Documento integrado con todas las funciones</p></div></div><div class="topbar-right"><div class="user">Admin · Prueba</div></div></header>
+<section class="content">
+  <div class="view-tabs">
+    <button class="view-tab active" onclick="showMain('modelo',this)">Modelo de Gestión</button>
+    <button class="view-tab" onclick="showMain('crm',this)">CRM</button>
+    <button class="view-tab" onclick="showMain('erp',this)">ERP</button>
+  </div>
+  <div id="main-modelo" class="main-view active">
+<div class="mg-page">
+  <section class="mg-hero card">
+    <div>
+      <p class="mg-eyebrow">Renova Digital · Sistema de gestión empresarial</p>
+      <h1>Modelo de Gestión</h1>
+      <p class="mg-lead">Representa la estructura de funcionamiento de Renova Digital para la compra, recepción, diagnóstico, reacondicionamiento, control de calidad, almacenamiento, comercialización, entrega y posventa de celulares, laptops y tablets reacondicionadas.</p>
+      <div class="mg-hero-tags">
+        <span class="mg-tag">Gobierno</span><span class="mg-tag">Cadena de valor</span><span class="mg-tag">Apoyo transversal</span><span class="mg-tag">Mejora continua</span>
+      </div>
+    </div>
+    <div class="mg-hero-stats">
+      <div class="mg-stat"><strong>3</strong><span>Macroprocesos</span></div>
+      <div class="mg-stat"><strong>22</strong><span>Procesos</span></div>
+      <div class="mg-stat"><strong>9</strong><span>Etapas de valor</span></div>
+    </div>
+  </section>
+
+  <section class="card mg-intro">
+    <div class="mg-intro-grid">
+      <div>
+        <h2>Propósito del modelo</h2>
+        <p>Este modelo de gestión define cómo Renova Digital organiza sus decisiones estratégicas, ejecuta la cadena de valor del reacondicionamiento tecnológico y asegura los recursos de apoyo necesarios para ofrecer dispositivos confiables, accesibles y con trazabilidad.</p>
+      </div>
+      <div class="mg-intro-pillars">
+        <div class="mg-pillar"><strong>Misión operativa</strong><span>Comercializar tecnología reacondicionada confiable con información transparente y atención segura.</span></div>
+        <div class="mg-pillar"><strong>Propuesta de valor</strong><span>Precios accesibles, revisión técnica, garantía, trazabilidad por serie y experiencia de compra confiable.</span></div>
+        <div class="mg-pillar"><strong>Enfoque</strong><span>Calidad, trazabilidad, control de datos y mejora continua basada en resultados y retroalimentación.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card mg-flow-general">
+    <h2>Flujo general de funcionamiento</h2>
+    <p class="muted">Secuencia adaptada a la operación real de Renova Digital, desde la dirección hasta la retroalimentación para la mejora continua.</p>
+    <div class="mg-flow-strip" aria-label="Flujo general">
+      <button type="button" class="mg-flow-step" data-jump="g1"><span class="mg-flow-n">1</span><strong>Dirección y planificación</strong><small>Objetivos, políticas y metas</small></button>
+      <div class="mg-flow-arrow">→</div>
+      <button type="button" class="mg-flow-step" data-jump="v1"><span class="mg-flow-n">2</span><strong>Recursos y proveedores</strong><small>Abastecimiento y capacidades</small></button>
+      <div class="mg-flow-arrow">→</div>
+      <button type="button" class="mg-flow-step" data-jump="v2"><span class="mg-flow-n">3</span><strong>Recepción de dispositivos</strong><small>Ingreso y registro por serie</small></button>
+      <div class="mg-flow-arrow">→</div>
+      <button type="button" class="mg-flow-step" data-jump="v3"><span class="mg-flow-n">4</span><strong>Evaluación y reacondicionamiento</strong><small>Diagnóstico, reparación y borrado seguro</small></button>
+      <div class="mg-flow-arrow">→</div>
+      <button type="button" class="mg-flow-step" data-jump="v4"><span class="mg-flow-n">5</span><strong>Control de calidad</strong><small>Pruebas y aprobación</small></button>
+      <div class="mg-flow-arrow">→</div>
+      <button type="button" class="mg-flow-step" data-jump="v5"><span class="mg-flow-n">6</span><strong>Inventario</strong><small>Stock disponible y trazable</small></button>
+      <div class="mg-flow-arrow">→</div>
+      <button type="button" class="mg-flow-step" data-jump="v6"><span class="mg-flow-n">7</span><strong>Comercialización</strong><small>Consulta, cotización y venta</small></button>
+      <div class="mg-flow-arrow">→</div>
+      <button type="button" class="mg-flow-step" data-jump="v7"><span class="mg-flow-n">8</span><strong>Entrega</strong><small>Despacho y confirmación</small></button>
+      <div class="mg-flow-arrow">→</div>
+      <button type="button" class="mg-flow-step" data-jump="v8"><span class="mg-flow-n">9</span><strong>Atención posventa</strong><small>Garantía, soporte y satisfacción</small></button>
+      <div class="mg-flow-arrow">→</div>
+      <button type="button" class="mg-flow-step mg-flow-step-final" data-jump="g5"><span class="mg-flow-n">10</span><strong>Retroalimentación y mejora continua</strong><small>Ajustes a procesos y decisiones</small></button>
+    </div>
+  </section>
+
+  <section class="card mg-controls">
+    <div class="mg-controls-left">
+      <button class="btn btn-primary btn-sm" data-mg-expand="all">Expandir todo</button>
+      <button class="btn btn-secondary btn-sm" data-mg-expand="none">Contraer macroprocesos</button>
+      <span class="muted mg-hint">Haz clic en cualquier proceso para abrir su ficha completa.</span>
+    </div>
+    <div class="mg-legend">
+      <span><i class="dot gov"></i>Gobierno: dirección y control</span>
+      <span><i class="dot val"></i>Valor: cadena operativa y comercial</span>
+      <span><i class="dot sup"></i>Apoyo: recursos transversales</span>
+    </div>
+  </section>
+
+  <section class="mg-map card" aria-label="Mapa de procesos de Renova Digital">
+    <div class="mg-map-head">
+      <h2>Mapa de procesos empresariales</h2>
+      <p class="muted">Los tres macroprocesos están conectados: el gobierno orienta, la cadena de valor genera el resultado para el cliente y los procesos de apoyo habilitan toda la operación.</p>
+    </div>
+
+    <div class="mg-context-row">
+      <div class="mg-context client"><span class="mg-context-icon" aria-hidden="true">👥</span><div><strong>Necesidades del cliente</strong><small>Busca tecnología funcional, accesible, confiable y con respaldo</small></div></div>
+      <div class="mg-context-arrow" aria-hidden="true">→</div>
+      <div class="mg-context org"><span class="mg-context-icon" aria-hidden="true">🏢</span><div><strong>Renova Digital</strong><small>Dirige, reacondiciona, comercializa y soporta dispositivos tecnológicos</small></div></div>
+      <div class="mg-context-arrow" aria-hidden="true">→</div>
+      <div class="mg-context value"><span class="mg-context-icon" aria-hidden="true">✔</span><div><strong>Valor entregado</strong><small>Equipo reacondicionado, probado, trazable y con atención posventa</small></div></div>
+    </div>
+
+    <!-- GOBIERNO -->
+    <div class="mg-band mg-gov" data-band="gobierno">
+      <div class="mg-band-header">
+        <button class="mg-band-toggle" data-toggle-band="gobierno" aria-expanded="true"><span class="mg-band-title"><span class="mg-band-badge">Nivel superior</span>Procesos de Gobierno</span><span class="mg-chevron">▾</span></button>
+        <p>Definen el rumbo estratégico, establecen políticas, controlan resultados y promueven la mejora continua.</p><button type="button" class="btn btn-sm btn-secondary mg-macro-btn" data-macro="gobierno">Ver detalle del macroproceso</button>
+      </div>
+      <div class="mg-band-body" id="band-gobierno">
+        <div class="mg-grid mg-grid-5">
+          <button class="mg-proc" data-process="g1"><span class="mg-code gov">G1</span><strong>Dirección y planificación estratégica</strong><span>Rumbo, metas y prioridades</span></button>
+          <button class="mg-proc" data-process="g2"><span class="mg-code gov">G2</span><strong>Gestión estratégica del negocio</strong><span>Mercado, rentabilidad y decisiones</span></button>
+          <button class="mg-proc" data-process="g3"><span class="mg-code gov">G3</span><strong>Gestión de calidad y riesgos</strong><span>Estándares, prevención y cumplimiento</span></button>
+          <button class="mg-proc" data-process="g4"><span class="mg-code gov">G4</span><strong>Control de gestión y resultados</strong><span>Indicadores, seguimiento y corrección</span></button>
+          <button class="mg-proc" data-process="g5"><span class="mg-code gov">G5</span><strong>Innovación y mejora continua</strong><span>Mejoras, digitalización y eficiencia operativa</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mg-flow-link"><span>Orientación, políticas, objetivos y control</span><i aria-hidden="true">↓</i></div>
+
+    <!-- VALOR -->
+    <div class="mg-band mg-val" data-band="valor">
+      <div class="mg-band-header">
+        <button class="mg-band-toggle" data-toggle-band="valor" aria-expanded="true"><span class="mg-band-title"><span class="mg-band-badge">Nivel central</span>Procesos Agregadores de Valor</span><span class="mg-chevron">▾</span></button>
+        <p>Cadena principal que transforma dispositivos adquiridos en productos reacondicionados, comercializados y respaldados.</p><button type="button" class="btn btn-sm btn-secondary mg-macro-btn" data-macro="valor">Ver detalle del macroproceso</button>
+      </div>
+      <div class="mg-band-body" id="band-valor">
+        <div class="mg-value-chain" role="list">
+          <button class="mg-proc mg-proc-chain" data-process="v1" role="listitem"><span class="mg-code val">V1</span><strong>Abastecimiento y adquisición</strong><span>Proveedores, compra y selección</span></button>
+          <div class="mg-chain-arrow" aria-hidden="true">→</div>
+          <button class="mg-proc mg-proc-chain" data-process="v2" role="listitem"><span class="mg-code val">V2</span><strong>Recepción y diagnóstico técnico</strong><span>Registro, revisión y clasificación</span></button>
+          <div class="mg-chain-arrow" aria-hidden="true">→</div>
+          <button class="mg-proc mg-proc-chain" data-process="v3" role="listitem"><span class="mg-code val">V3</span><strong>Reacondicionamiento y preparación</strong><span>Reparación, limpieza y configuración</span></button>
+          <div class="mg-chain-arrow" aria-hidden="true">→</div>
+          <button class="mg-proc mg-proc-chain" data-process="v4" role="listitem"><span class="mg-code val">V4</span><strong>Control de calidad</strong><span>Pruebas finales y aprobación</span></button>
+          <div class="mg-chain-arrow" aria-hidden="true">→</div>
+          <button class="mg-proc mg-proc-chain" data-process="v5" role="listitem"><span class="mg-code val">V5</span><strong>Inventario y almacenamiento</strong><span>Stock por serie y estado</span></button>
+          <div class="mg-chain-arrow" aria-hidden="true">→</div>
+          <button class="mg-proc mg-proc-chain" data-process="v6" role="listitem"><span class="mg-code val">V6</span><strong>Marketing y ventas</strong><span>Catálogo, cotización y cierre</span></button>
+          <div class="mg-chain-arrow" aria-hidden="true">→</div>
+          <button class="mg-proc mg-proc-chain" data-process="v7" role="listitem"><span class="mg-code val">V7</span><strong>Pedido, entrega y distribución</strong><span>Preparación, despacho y trazabilidad</span></button>
+          <div class="mg-chain-arrow" aria-hidden="true">→</div>
+          <button class="mg-proc mg-proc-chain" data-process="v8" role="listitem"><span class="mg-code val">V8</span><strong>Atención y servicio posventa</strong><span>Garantías, soporte y fidelización</span></button>
+          <div class="mg-chain-arrow" aria-hidden="true">→</div>
+          <button class="mg-proc mg-proc-chain" data-process="v9" role="listitem"><span class="mg-code val">V9</span><strong>Bajas y recuperación de equipos</strong><span>Registro de bajas, reutilización y disposición</span></button>
+        </div>
+        <div class="mg-feedback"><span>↩ Retroalimentación del cliente y posventa → alimenta control de calidad, mejora continua y decisiones de gobierno.</span></div>
+      </div>
+    </div>
+
+    <div class="mg-flow-link"><span>Recursos, soporte, información y cumplimiento</span><i aria-hidden="true">↑</i></div>
+
+    <!-- APOYO -->
+    <div class="mg-band mg-sup" data-band="apoyo">
+      <div class="mg-band-header">
+        <button class="mg-band-toggle" data-toggle-band="apoyo" aria-expanded="true"><span class="mg-band-title"><span class="mg-band-badge">Nivel inferior</span>Procesos Habilitantes o de Apoyo</span><span class="mg-chevron">▾</span></button>
+        <p>Proporcionan capacidades transversales para que la dirección y la cadena de valor operen con eficiencia y control.</p><button type="button" class="btn btn-sm btn-secondary mg-macro-btn" data-macro="apoyo">Ver detalle del macroproceso</button>
+      </div>
+      <div class="mg-band-body" id="band-apoyo">
+        <div class="mg-grid mg-grid-4">
+          <button class="mg-proc" data-process="a1"><span class="mg-code sup">A1</span><strong>Gestión administrativa y documental</strong><span>Registros, soportes y archivo</span></button>
+          <button class="mg-proc" data-process="a2"><span class="mg-code sup">A2</span><strong>Gestión financiera y contable</strong><span>Ingresos, egresos, costos y rentabilidad</span></button>
+          <button class="mg-proc" data-process="a3"><span class="mg-code sup">A3</span><strong>Gestión del talento humano</strong><span>Roles, capacitación y desempeño</span></button>
+          <button class="mg-proc" data-process="a4"><span class="mg-code sup">A4</span><strong>Gestión tecnológica y sistemas</strong><span>Web, CRM, ERP, datos y respaldos</span></button>
+          <button class="mg-proc" data-process="a5"><span class="mg-code sup">A5</span><strong>Infraestructura y recursos físicos</strong><span>Herramientas, espacio y equipos</span></button>
+          <button class="mg-proc" data-process="a6"><span class="mg-code sup">A6</span><strong>Gestión logística y soporte operativo</strong><span>Recepción, embalaje y coordinación</span></button>
+          <button class="mg-proc" data-process="a7"><span class="mg-code sup">A7</span><strong>Gestión legal y cumplimiento</strong><span>Garantías, consumidor, tributario y datos</span></button>
+          <button class="mg-proc" data-process="a8"><span class="mg-code sup">A8</span><strong>Seguridad y gestión de información</strong><span>Accesos, protección y borrado seguro</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card mg-summary">
+    <h2>Relación entre macroprocesos</h2>
+    <div class="mg-rel-grid">
+      <div class="mg-rel"><strong>Gobierno → Valor</strong><p>Define objetivos, políticas de calidad, criterios de compra, precios, metas comerciales y lineamientos de garantía para la cadena de reacondicionamiento y venta.</p></div>
+      <div class="mg-rel"><strong>Gobierno → Apoyo</strong><p>Asigna recursos, establece responsabilidades, controla riesgos y exige cumplimiento administrativo, financiero, legal y tecnológico.</p></div>
+      <div class="mg-rel"><strong>Apoyo → Valor</strong><p>Proporciona personal capacitado, tecnología CRM/ERP, financiamiento, infraestructura, logística, seguridad y cumplimiento normativo.</p></div>
+      <div class="mg-rel"><strong>Valor → Gobierno</strong><p>Retroalimenta con resultados de ventas, costos, tiempos, calidad, reclamos, garantías y satisfacción del cliente para ajustar decisiones y mejorar.</p></div>
+    </div>
+  </section>
+</div>
+
+<!-- Modal ficha -->
+<div class="mg-modal" id="mgModal" aria-hidden="true">
+  <div class="mg-modal-backdrop" data-mg-close></div>
+  <div class="mg-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="mgModalTitle">
+    <div class="mg-modal-head">
+      <div>
+        <p class="mg-modal-macro" id="mgModalMacro"></p>
+        <h2 id="mgModalTitle"></h2>
+      </div>
+      <button class="mg-close" type="button" data-mg-close aria-label="Cerrar ficha">×</button>
+    </div>
+    <div class="mg-modal-body" id="mgModalBody"></div>
+  </div>
+</div>
+
+</div>
+  <div id="main-crm" class="main-view"><div class="panel"><div class="panel-head"><h3>Listado de clientes</h3><button class="btn" data-open-modal="modal-cliente">+ Nuevo cliente</button></div>
+<div class="toolbar"><input placeholder="Nombre, documento, correo o teléfono"><select><option>Todos los tipos</option><option>Persona</option><option>Empresa</option></select><select><option>Activo</option><option>Inactivo</option></select><button class="btn alt">Filtrar</button></div>
+<table><thead><tr><th>Cliente</th><th>Tipo</th><th>Documento</th><th>Correo</th><th>Teléfono</th><th>Ciudad</th><th>Estado</th></tr></thead><tbody data-table="clientes">
+</tbody></table></div>
+<div class="panel"><h3>Historial del cliente (ejemplo: Laura Méndez)</h3><table><thead><tr><th>Venta</th><th>Fecha</th><th>Unidad/Producto</th><th>Total</th><th>Estado</th></tr></thead><tbody>
+<tr><td>V-1024</td><td>11/11/2026</td><td>NS-A1002 · Galaxy A54</td><td>$ 320</td><td><span class="pill ok">Entregada/Pagada</span></td></tr>
+<tr><td>V-0998</td><td>20/10/2026</td><td>NS-I0901 · iPad 9ª Gen</td><td>$ 280</td><td><span class="pill ok">Finalizada</span></td></tr>
+</tbody></table></div>
+<hr style='margin:24px 0;border:none;border-top:1px solid #d9e2ec'>
+<div class="cards"><div class="card stat"><h3>Nuevos</h3><div class="value">12</div></div><div class="card stat"><h3>Contactados</h3><div class="value">9</div></div><div class="card stat"><h3>Calificados</h3><div class="value">8</div></div><div class="card stat"><h3>Convertidos</h3><div class="value">5</div></div></div>
+<div class="panel"><div class="panel-head"><h3>Listado de prospectos</h3><button class="btn" data-open-modal="modal-prospecto">+ Nuevo prospecto</button></div>
+<table><thead><tr><th>Nombre</th><th>Contacto</th><th>Interés</th><th>Origen</th><th>Responsable</th><th>Estado</th></tr></thead><tbody data-table="prospectos"></tbody></table></div>
+<hr style='margin:24px 0;border:none;border-top:1px solid #d9e2ec'>
+<div class="panel"><div class="panel-head"><h3>Oportunidades</h3><button class="btn" data-open-modal="modal-seguimiento">+ Nueva oportunidad</button></div>
+<table><thead><tr><th>Título</th><th>Cliente/Prospecto</th><th>Etapa</th><th>Valor estimado</th><th>Cierre est.</th><th>Responsable</th></tr></thead><tbody data-table="seguimiento"></tbody></table></div>
+<div class="panel"><h3>Actividades recientes</h3><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Detalle</th><th>Resultado</th></tr></thead><tbody>
+<tr><td>10/11/2026</td><td>Llamada</td><td>Distribuciones Eco</td><td>Solicitó cotización</td></tr>
+<tr><td>09/11/2026</td><td>Mensaje</td><td>María Pérez</td><td>Interesada en modelo</td></tr>
+</tbody></table></div>
+<hr style='margin:24px 0;border:none;border-top:1px solid #d9e2ec'>
+<div class="cards"><div class="card stat"><h3>Abiertos</h3><div class="value">7</div></div><div class="card stat"><h3>En proceso</h3><div class="value">4</div></div><div class="card stat"><h3>Garantías</h3><div class="value">3</div></div><div class="card stat"><h3>Resueltos</h3><div class="value">11</div></div></div>
+<div class="panel"><div class="panel-head"><h3>Casos</h3><button class="btn" data-open-modal="modal-atencion">+ Nuevo caso</button></div>
+<table><thead><tr><th>Caso</th><th>Cliente</th><th>Tipo</th><th>Unidad/Venta</th><th>Prioridad</th><th>Asunto</th><th>Estado</th></tr></thead><tbody data-table="atencion"></tbody></table></div></div>
+  <div id="main-erp" class="main-view"><div class="panel"><div class="panel-head"><h3>Catálogo</h3><button class="btn" data-open-modal="modal-producto">+ Nuevo producto</button></div>
+<div class="toolbar"><input placeholder="SKU o modelo"><select><option>Todas las categorías</option><option>Celulares</option><option>Laptops</option><option>Tablets</option></select></div>
+<table><thead><tr><th>SKU</th><th>Modelo</th><th>Categoría</th><th>Marca</th><th>Garantía</th><th>Disponibles</th><th>Estado</th></tr></thead><tbody data-table="productos"></tbody></table></div>
+<hr style='margin:24px 0;border:none;border-top:1px solid #d9e2ec'>
+<div class="cards">
+<div class="card stat"><h3>Disponibles</h3><div class="value">76</div><div class="note">Listas para venta</div></div>
+<div class="card stat"><h3>Reservadas</h3><div class="value">8</div><div class="note">Confirmadas, sin entrega</div></div>
+<div class="card stat"><h3>Vendidas</h3><div class="value">214</div><div class="note">Salida definitiva</div></div>
+<div class="card stat"><h3>En revisión</h3><div class="value">5</div><div class="note">Devolución/diagnóstico</div></div></div>
+<div class="panel"><div class="panel-head"><h3>Unidades</h3><button class="btn" data-open-modal="modal-inventario">+ Registrar unidad</button></div>
+<div class="toolbar"><input placeholder="Buscar por serie o IMEI"><select><option>Todos los estados</option><option>Disponible</option><option>Reservada</option><option>Vendida</option><option>Pendiente revisión</option><option>En diagnóstico</option><option>Apta para venta</option><option>Baja</option></select><select><option>Todos los productos</option></select></div>
+<table><thead><tr><th>N° Serie</th><th>Producto</th><th>IMEI</th><th>Grado</th><th>Compra origen</th><th>Estado</th></tr></thead><tbody data-table="inventario"></tbody></table></div>
+<hr style='margin:24px 0;border:none;border-top:1px solid #d9e2ec'>
+<div class="panel"><div class="panel-head"><h3>Listado</h3><button class="btn" data-open-modal="modal-proveedor">+ Nuevo proveedor</button></div>
+<table><thead><tr><th>Proveedor</th><th>Contacto</th><th>Correo</th><th>Teléfono</th><th>Estado</th></tr></thead><tbody data-table="proveedores"></tbody></table></div>
+<hr style='margin:24px 0;border:none;border-top:1px solid #d9e2ec'>
+
+<div class="tabs">
+  <a href="#estadisticas" class="tab" data-tab="estadisticas">Estadísticas</a>
+  <a href="#tendencia" class="tab" data-tab="tendencia">Tendencia</a>
+  <a href="#comparativo" class="tab" data-tab="comparativo">Compras y ventas</a>
+  <a href="#registro" class="tab" data-tab="registro">Registro de compras</a>
+  <a href="#pagos" class="tab" data-tab="pagos">Pagos y saldos</a>
+</div>
+
+<div class="section" data-section="estadisticas">
+  <div class="kpi-grid">
+    <div class="card stat"><div class="stat-top"><div><h3>Compras del mes</h3><div class="value">$ 11.250</div></div></div><div class="trend up">▲ +18.4% vs mes anterior</div>
+      <svg class="spark" viewBox="0 0 120 40" preserveAspectRatio="none"><path class="area" d="M0,32 L20,28 L40,30 L60,22 L80,24 L100,14 L120,8 L120,40 L0,40 Z" fill="#0f5132"/><path d="M0,32 L20,28 L40,30 L60,22 L80,24 L100,14 L120,8" stroke="#0f5132"/></svg>
+    </div>
+    <div class="card stat"><h3>Unidades ingresadas</h3><div class="value">42</div><div class="trend up">▲ +10.5% vs mes anterior</div>
+      <svg class="spark" viewBox="0 0 120 40" preserveAspectRatio="none"><path class="area" d="M0,30 L20,30 L40,26 L60,24 L80,20 L100,18 L120,12 L120,40 L0,40 Z" fill="#175cd3"/><path d="M0,30 L20,30 L40,26 L60,24 L80,20 L100,18 L120,12" stroke="#175cd3"/></svg>
+    </div>
+    <div class="card stat"><h3>Total pagado</h3><div class="value">$ 9.300</div><div class="trend up">▲ +6.2% vs mes anterior</div>
+      <svg class="spark" viewBox="0 0 120 40" preserveAspectRatio="none"><path class="area" d="M0,28 L20,26 L40,27 L60,20 L80,18 L100,16 L120,14 L120,40 L0,40 Z" fill="#0f5132"/><path d="M0,28 L20,26 L40,27 L60,20 L80,18 L100,16 L120,14" stroke="#0f5132"/></svg>
+    </div>
+    <div class="card stat"><h3>Saldo pendiente</h3><div class="value">$ 1.950</div><div class="trend down">▼ -12.0% vs mes anterior</div>
+      <svg class="spark" viewBox="0 0 120 40" preserveAspectRatio="none"><path class="area" d="M0,14 L20,16 L40,18 L60,20 L80,22 L100,24 L120,26 L120,40 L0,40 Z" fill="#b54708"/><path d="M0,14 L20,16 L40,18 L60,20 L80,22 L100,24 L120,26" stroke="#b54708"/></svg>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="panel"><div class="panel-head"><h3>Compras por proveedor (mes)</h3></div>
+      <div class="chart">
+        <div class="bar-row"><div class="bar-label">Proveedor A</div><div class="bar-track"><div class="bar-fill" style="width:88%"></div></div><div class="bar-val">$ 9.900</div></div>
+        <div class="bar-row"><div class="bar-label">Proveedor B</div><div class="bar-track"><div class="bar-fill alt" style="width:31%"></div></div><div class="bar-val">$ 3.450</div></div>
+        <div class="bar-row"><div class="bar-label">Otros</div><div class="bar-track"><div class="bar-fill warn" style="width:8%"></div></div><div class="bar-val">$ 900</div></div>
+      </div>
+    </div>
+    <div class="panel"><div class="panel-head"><h3>Estado de compras</h3></div>
+      <div class="chart">
+        <div class="bar-row"><div class="bar-label">Confirmadas</div><div class="bar-track"><div class="bar-fill" style="width:85%"></div></div><div class="bar-val">85%</div></div>
+        <div class="bar-row"><div class="bar-label">Pagadas</div><div class="bar-track"><div class="bar-fill" style="width:82%"></div></div><div class="bar-val">82%</div></div>
+        <div class="bar-row"><div class="bar-label">Pago parcial</div><div class="bar-track"><div class="bar-fill warn" style="width:18%"></div></div><div class="bar-val">18%</div></div>
+        <div class="bar-row"><div class="bar-label">Borrador</div><div class="bar-track"><div class="bar-fill alt" style="width:10%"></div></div><div class="bar-val">10%</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-section="tendencia">
+  <div class="panel"><div class="panel-head"><h3>Evolución de compras (línea de tendencia)</h3><span class="pill ok">Tendencia: en crecimiento</span></div>
+    <div class="line-chart"><svg viewBox="0 0 600 180" preserveAspectRatio="none">
+      <defs><linearGradient id="gc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0f5132" stop-opacity="0.25"/><stop offset="100%" stop-color="#0f5132" stop-opacity="0"/></linearGradient></defs>
+      <g stroke="#e6edf2" stroke-width="1"><line x1="40" y1="20" x2="580" y2="20"/><line x1="40" y1="55" x2="580" y2="55"/><line x1="40" y1="90" x2="580" y2="90"/><line x1="40" y1="125" x2="580" y2="125"/><line x1="40" y1="160" x2="580" y2="160"/></g>
+      <path d="M40,130 L130,110 L220,118 L310,95 L400,102 L490,70 L580,35 L580,160 L40,160 Z" fill="url(#gc)"/>
+      <path d="M40,130 L130,110 L220,118 L310,95 L400,102 L490,70 L580,35" fill="none" stroke="#0f5132" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <g fill="#0f5132"><circle cx="40" cy="130" r="4"/><circle cx="130" cy="110" r="4"/><circle cx="220" cy="118" r="4"/><circle cx="310" cy="95" r="4"/><circle cx="400" cy="102" r="4"/><circle cx="490" cy="70" r="4"/><circle cx="580" cy="35" r="5"/></g>
+      <g fill="#667085" font-size="12"><text x="40" y="176" text-anchor="middle">Jun</text><text x="130" y="176" text-anchor="middle">Jul</text><text x="220" y="176" text-anchor="middle">Ago</text><text x="310" y="176" text-anchor="middle">Sep</text><text x="400" y="176" text-anchor="middle">Oct</text><text x="490" y="176" text-anchor="middle">Nov</text></g>
+      <g fill="#123d2a" font-size="11" font-weight="600"><text x="40" y="122" text-anchor="middle">$4.2k</text><text x="130" y="102" text-anchor="middle">$6.1k</text><text x="220" y="110" text-anchor="middle">$5.4k</text><text x="310" y="87" text-anchor="middle">$8.0k</text><text x="400" y="94" text-anchor="middle">$7.3k</text><text x="490" y="62" text-anchor="middle">$11.2k</text></g>
+    </svg></div>
+    <div class="chart-note">Línea de evolución mensual del monto comprado (datos ficticios). Cuando la línea sube, las compras crecieron; cuando baja, disminuyeron.</div>
+  </div>
+  <div class="panel"><h3>Variación mensual (compras)</h3><table><thead><tr><th>Mes</th><th>Monto compras</th><th>Variación</th><th>Lectura</th></tr></thead><tbody>
+      <tr><td>Junio</td><td>$ 4.200</td><td><span class="trend flat">— Base</span></td><td>Referencia inicial</td></tr>
+      <tr><td>Julio</td><td>$ 6.100</td><td><span class="trend up">▲ +45.2%</span></td><td>Subió</td></tr>
+      <tr><td>Agosto</td><td>$ 5.400</td><td><span class="trend down">▼ -11.5%</span></td><td>Bajó</td></tr>
+      <tr><td>Septiembre</td><td>$ 8.000</td><td><span class="trend up">▲ +48.1%</span></td><td>Subió</td></tr>
+      <tr><td>Octubre</td><td>$ 7.300</td><td><span class="trend down">▼ -8.8%</span></td><td>Bajó</td></tr>
+      <tr><td>Noviembre</td><td>$ 11.250</td><td><span class="trend up">▲ +54.1%</span></td><td>Subió</td></tr>
+  </tbody></table></div>
+</div>
+
+<div class="section" data-section="comparativo">
+  <div class="panel"><div class="panel-head"><h3>Compras y ventas (líneas comparativas)</h3><span class="pill info">Mismo periodo, datos juntos</span></div>
+    <div class="line-chart"><svg viewBox="0 0 600 180" preserveAspectRatio="none">
+      <g stroke="#e6edf2" stroke-width="1"><line x1="40" y1="20" x2="580" y2="20"/><line x1="40" y1="55" x2="580" y2="55"/><line x1="40" y1="90" x2="580" y2="90"/><line x1="40" y1="125" x2="580" y2="125"/><line x1="40" y1="160" x2="580" y2="160"/></g>
+      <path d="M40,130 L130,110 L220,118 L310,95 L400,102 L490,70 L580,45" fill="none" stroke="#0f5132" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M40,120 L130,112 L220,116 L310,92 L400,78 L490,58 L580,25" fill="none" stroke="#175cd3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <g fill="#0f5132"><circle cx="40" cy="130" r="4"/><circle cx="130" cy="110" r="4"/><circle cx="220" cy="118" r="4"/><circle cx="310" cy="95" r="4"/><circle cx="400" cy="102" r="4"/><circle cx="490" cy="70" r="4"/><circle cx="580" cy="45" r="4"/></g>
+      <g fill="#175cd3"><circle cx="40" cy="120" r="4"/><circle cx="130" cy="112" r="4"/><circle cx="220" cy="116" r="4"/><circle cx="310" cy="92" r="4"/><circle cx="400" cy="78" r="4"/><circle cx="490" cy="58" r="4"/><circle cx="580" cy="25" r="4"/></g>
+      <g fill="#667085" font-size="12"><text x="40" y="176" text-anchor="middle">Jun</text><text x="130" y="176" text-anchor="middle">Jul</text><text x="220" y="176" text-anchor="middle">Ago</text><text x="310" y="176" text-anchor="middle">Sep</text><text x="400" y="176" text-anchor="middle">Oct</text><text x="490" y="176" text-anchor="middle">Nov</text><text x="580" y="176" text-anchor="middle">Dic*</text></g>
+    </svg></div>
+    <div class="legend"><span><span class="dot g"></span>Compras</span><span><span class="dot b"></span>Ventas</span></div>
+  </div>
+  <div class="panel"><h3>Datos comparativos (compras y ventas)</h3>
+    <table><thead><tr><th>Mes</th><th>Compras</th><th>Var. compras</th><th>Ventas</th><th>Var. ventas</th></tr></thead><tbody>
+      <tr><td>Junio</td><td>$ 4.200</td><td><span class="trend flat">—</span></td><td>$ 5.200</td><td><span class="trend flat">—</span></td></tr>
+      <tr><td>Julio</td><td>$ 6.100</td><td><span class="trend up">▲ +45.2%</span></td><td>$ 6.000</td><td><span class="trend up">▲ +15.4%</span></td></tr>
+      <tr><td>Agosto</td><td>$ 5.400</td><td><span class="trend down">▼ -11.5%</span></td><td>$ 5.600</td><td><span class="trend down">▼ -6.7%</span></td></tr>
+      <tr><td>Septiembre</td><td>$ 8.000</td><td><span class="trend up">▲ +48.1%</span></td><td>$ 8.800</td><td><span class="trend up">▲ +57.1%</span></td></tr>
+      <tr><td>Octubre</td><td>$ 7.300</td><td><span class="trend down">▼ -8.8%</span></td><td>$ 10.500</td><td><span class="trend up">▲ +19.3%</span></td></tr>
+      <tr><td>Noviembre</td><td>$ 11.250</td><td><span class="trend up">▲ +54.1%</span></td><td>$ 15.050</td><td><span class="trend up">▲ +43.3%</span></td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<div class="section" data-section="registro">
+  <div class="panel"><div class="panel-head"><h3>Registro de compras</h3><button class="btn" data-open-modal="modal-compra">+ Nueva compra</button></div>
+  <div class="toolbar"><input placeholder="Buscar por N° o proveedor"><select><option>Comercial: todos</option><option>Borrador</option><option>Confirmada</option><option>Anulada</option></select><select><option>Pago: todos</option><option>Pendiente</option><option>Parcial</option><option>Pagado</option></select></div>
+  <table><thead><tr><th>N°</th><th>Fecha</th><th>Proveedor</th><th>Total</th><th>Pagado</th><th>Saldo</th><th>Método de pago</th><th>Comercial</th><th>Pago</th></tr></thead><tbody data-table="compras"></tbody></table></div>
+</div>
+
+<div class="section" data-section="pagos">
+  <div class="grid2">
+    <div class="panel"><h3>Pagos realizados a proveedores</h3><table><thead><tr><th>Fecha</th><th>Compra</th><th>Proveedor</th><th>Monto</th><th>Estado</th></tr></thead><tbody>
+      <tr><td>08/11/2026</td><td>DC-0045</td><td>Proveedor A</td><td>$ 7.800</td><td><span class="pill ok">Registrado</span></td></tr>
+      <tr><td>10/11/2026</td><td>DC-0046</td><td>Proveedor B</td><td>$ 1.500</td><td><span class="pill ok">Registrado</span></td></tr>
+    </tbody></table></div>
+    <div class="panel"><h3>Saldos pendientes</h3><table><thead><tr><th>Compra</th><th>Proveedor</th><th>Saldo</th><th>Estado</th></tr></thead><tbody>
+      <tr><td>DC-0046</td><td>Proveedor B</td><td>$ 1.950</td><td><span class="pill warn">Parcial</span></td></tr>
+      <tr><td>DC-0047</td><td>Proveedor A</td><td>$ 2.100</td><td><span class="pill muted">Pendiente</span></td></tr>
+    </tbody></table><p style="color:var(--muted);font-size:12px;margin-top:8px">Detalle financiero completo en <a href="finanzas.html">Finanzas</a>.</p></div>
+  </div>
+</div>
+
+<hr style='margin:24px 0;border:none;border-top:1px solid #d9e2ec'>
+
+<div class="tabs">
+  <a href="#estadisticas" class="tab" data-tab="estadisticas">Estadísticas</a>
+  <a href="#tendencia" class="tab" data-tab="tendencia">Tendencia</a>
+  <a href="#comparativo" class="tab" data-tab="comparativo">Compras y ventas</a>
+  <a href="#registro" class="tab" data-tab="registro">Registro de ventas</a>
+  <a href="#cobros" class="tab" data-tab="cobros">Cobros y saldos</a>
+</div>
+
+<div class="section" data-section="estadisticas">
+  <div class="kpi-grid">
+    <div class="card stat"><h3>Ventas del mes</h3><div class="value">$ 18.450</div><div class="trend up">▲ +22.6% vs mes anterior</div>
+      <svg class="spark" viewBox="0 0 120 40" preserveAspectRatio="none"><path class="area" d="M0,34 L20,30 L40,28 L60,24 L80,20 L100,12 L120,6 L120,40 L0,40 Z" fill="#175cd3"/><path d="M0,34 L20,30 L40,28 L60,24 L80,20 L100,12 L120,6" stroke="#175cd3"/></svg>
+    </div>
+    <div class="card stat"><h3>Unidades vendidas</h3><div class="value">24</div><div class="trend up">▲ +14.3% vs mes anterior</div>
+      <svg class="spark" viewBox="0 0 120 40" preserveAspectRatio="none"><path class="area" d="M0,30 L20,28 L40,26 L60,22 L80,20 L100,16 L120,10 L120,40 L0,40 Z" fill="#0f5132"/><path d="M0,30 L20,28 L40,26 L60,22 L80,20 L100,16 L120,10" stroke="#0f5132"/></svg>
+    </div>
+    <div class="card stat"><h3>Cobrado</h3><div class="value">$ 12.340</div><div class="trend up">▲ +9.8% vs mes anterior</div>
+      <svg class="spark" viewBox="0 0 120 40" preserveAspectRatio="none"><path class="area" d="M0,30 L20,28 L40,26 L60,22 L80,18 L100,16 L120,14 L120,40 L0,40 Z" fill="#0f5132"/><path d="M0,30 L20,28 L40,26 L60,22 L80,18 L100,16 L120,14" stroke="#0f5132"/></svg>
+    </div>
+    <div class="card stat"><h3>Por cobrar</h3><div class="value">$ 4.120</div><div class="trend down">▼ -5.4% vs mes anterior</div>
+      <svg class="spark" viewBox="0 0 120 40" preserveAspectRatio="none"><path class="area" d="M0,16 L20,18 L40,17 L60,20 L80,22 L100,24 L120,26 L120,40 L0,40 Z" fill="#b54708"/><path d="M0,16 L20,18 L40,17 L60,20 L80,22 L100,24 L120,26" stroke="#b54708"/></svg>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="panel"><div class="panel-head"><h3>Estado comercial</h3></div>
+      <div class="chart">
+        <div class="bar-row"><div class="bar-label">Entregadas</div><div class="bar-track"><div class="bar-fill" style="width:72%"></div></div><div class="bar-val">24</div></div>
+        <div class="bar-row"><div class="bar-label">Confirmadas</div><div class="bar-track"><div class="bar-fill alt" style="width:28%"></div></div><div class="bar-val">5</div></div>
+        <div class="bar-row"><div class="bar-label">Cotizaciones</div><div class="bar-track"><div class="bar-fill alt" style="width:22%"></div></div><div class="bar-val">6</div></div>
+        <div class="bar-row"><div class="bar-label">Anuladas</div><div class="bar-track"><div class="bar-fill warn" style="width:8%"></div></div><div class="bar-val">2</div></div>
+      </div>
+    </div>
+    <div class="panel"><div class="panel-head"><h3>Estado de cobro</h3></div>
+      <div class="chart">
+        <div class="bar-row"><div class="bar-label">Pagadas</div><div class="bar-track"><div class="bar-fill" style="width:65%"></div></div><div class="bar-val">65%</div></div>
+        <div class="bar-row"><div class="bar-label">Pago parcial</div><div class="bar-track"><div class="bar-fill warn" style="width:22%"></div></div><div class="bar-val">22%</div></div>
+        <div class="bar-row"><div class="bar-label">Pendientes</div><div class="bar-track"><div class="bar-fill alt" style="width:13%"></div></div><div class="bar-val">13%</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-section="tendencia">
+  <div class="panel"><div class="panel-head"><h3>Evolución de ventas (línea de tendencia)</h3><span class="pill ok">Tendencia: en crecimiento</span></div>
+    <div class="line-chart"><svg viewBox="0 0 600 180" preserveAspectRatio="none">
+      <defs><linearGradient id="gv" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#175cd3" stop-opacity="0.22"/><stop offset="100%" stop-color="#175cd3" stop-opacity="0"/></linearGradient></defs>
+      <g stroke="#e6edf2" stroke-width="1"><line x1="40" y1="20" x2="580" y2="20"/><line x1="40" y1="55" x2="580" y2="55"/><line x1="40" y1="90" x2="580" y2="90"/><line x1="40" y1="125" x2="580" y2="125"/><line x1="40" y1="160" x2="580" y2="160"/></g>
+      <path d="M40,125 L130,118 L220,122 L310,100 L400,88 L490,70 L580,30 L580,160 L40,160 Z" fill="url(#gv)"/>
+      <path d="M40,125 L130,118 L220,122 L310,100 L400,88 L490,70 L580,30" fill="none" stroke="#175cd3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <g fill="#175cd3"><circle cx="40" cy="125" r="4"/><circle cx="130" cy="118" r="4"/><circle cx="220" cy="122" r="4"/><circle cx="310" cy="100" r="4"/><circle cx="400" cy="88" r="4"/><circle cx="490" cy="70" r="4"/><circle cx="580" cy="30" r="5"/></g>
+      <g fill="#667085" font-size="12"><text x="40" y="176" text-anchor="middle">Jun</text><text x="130" y="176" text-anchor="middle">Jul</text><text x="220" y="176" text-anchor="middle">Ago</text><text x="310" y="176" text-anchor="middle">Sep</text><text x="400" y="176" text-anchor="middle">Oct</text><text x="490" y="176" text-anchor="middle">Nov</text></g>
+      <g fill="#123d2a" font-size="11" font-weight="600"><text x="40" y="117" text-anchor="middle">$5.2k</text><text x="130" y="110" text-anchor="middle">$6.0k</text><text x="220" y="114" text-anchor="middle">$5.6k</text><text x="310" y="92" text-anchor="middle">$8.8k</text><text x="400" y="80" text-anchor="middle">$10.5k</text><text x="490" y="62" text-anchor="middle">$15.0k</text></g>
+    </svg></div>
+    <div class="chart-note">Línea de evolución mensual de ventas (datos ficticios). Cuando la línea sube, las ventas crecieron; cuando baja, disminuyeron.</div>
+  </div>
+  <div class="panel"><h3>Variación mensual (ventas)</h3><table><thead><tr><th>Mes</th><th>Monto ventas</th><th>Variación</th><th>Lectura</th></tr></thead><tbody>
+    <tr><td>Junio</td><td>$ 5.200</td><td><span class="trend flat">— Base</span></td><td>Referencia inicial</td></tr>
+    <tr><td>Julio</td><td>$ 6.000</td><td><span class="trend up">▲ +15.4%</span></td><td>Subió</td></tr>
+    <tr><td>Agosto</td><td>$ 5.600</td><td><span class="trend down">▼ -6.7%</span></td><td>Bajó</td></tr>
+    <tr><td>Septiembre</td><td>$ 8.800</td><td><span class="trend up">▲ +57.1%</span></td><td>Subió</td></tr>
+    <tr><td>Octubre</td><td>$ 10.500</td><td><span class="trend up">▲ +19.3%</span></td><td>Subió</td></tr>
+    <tr><td>Noviembre</td><td>$ 15.050</td><td><span class="trend up">▲ +43.3%</span></td><td>Subió</td></tr>
+  </tbody></table></div>
+</div>
+
+<div class="section" data-section="comparativo">
+  <div class="panel"><div class="panel-head"><h3>Compras y ventas (líneas comparativas)</h3><span class="pill info">Mismo periodo, datos juntos</span></div>
+    <div class="line-chart"><svg viewBox="0 0 600 180" preserveAspectRatio="none">
+      <g stroke="#e6edf2" stroke-width="1"><line x1="40" y1="20" x2="580" y2="20"/><line x1="40" y1="55" x2="580" y2="55"/><line x1="40" y1="90" x2="580" y2="90"/><line x1="40" y1="125" x2="580" y2="125"/><line x1="40" y1="160" x2="580" y2="160"/></g>
+      <path d="M40,130 L130,110 L220,118 L310,95 L400,102 L490,70 L580,45" fill="none" stroke="#0f5132" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M40,120 L130,112 L220,116 L310,92 L400,78 L490,58 L580,25" fill="none" stroke="#175cd3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <g fill="#0f5132"><circle cx="40" cy="130" r="4"/><circle cx="130" cy="110" r="4"/><circle cx="220" cy="118" r="4"/><circle cx="310" cy="95" r="4"/><circle cx="400" cy="102" r="4"/><circle cx="490" cy="70" r="4"/><circle cx="580" cy="45" r="4"/></g>
+      <g fill="#175cd3"><circle cx="40" cy="120" r="4"/><circle cx="130" cy="112" r="4"/><circle cx="220" cy="116" r="4"/><circle cx="310" cy="92" r="4"/><circle cx="400" cy="78" r="4"/><circle cx="490" cy="58" r="4"/><circle cx="580" cy="25" r="4"/></g>
+      <g fill="#667085" font-size="12"><text x="40" y="176" text-anchor="middle">Jun</text><text x="130" y="176" text-anchor="middle">Jul</text><text x="220" y="176" text-anchor="middle">Ago</text><text x="310" y="176" text-anchor="middle">Sep</text><text x="400" y="176" text-anchor="middle">Oct</text><text x="490" y="176" text-anchor="middle">Nov</text></g>
+    </svg></div>
+    <div class="legend"><span><span class="dot g"></span>Compras</span><span><span class="dot b"></span>Ventas</span></div>
+  </div>
+  <div class="panel"><h3>Datos comparativos (compras y ventas)</h3>
+    <table><thead><tr><th>Mes</th><th>Compras</th><th>Var. compras</th><th>Ventas</th><th>Var. ventas</th></tr></thead><tbody>
+      <tr><td>Junio</td><td>$ 4.200</td><td><span class="trend flat">—</span></td><td>$ 5.200</td><td><span class="trend flat">—</span></td></tr>
+      <tr><td>Julio</td><td>$ 6.100</td><td><span class="trend up">▲ +45.2%</span></td><td>$ 6.000</td><td><span class="trend up">▲ +15.4%</span></td></tr>
+      <tr><td>Agosto</td><td>$ 5.400</td><td><span class="trend down">▼ -11.5%</span></td><td>$ 5.600</td><td><span class="trend down">▼ -6.7%</span></td></tr>
+      <tr><td>Septiembre</td><td>$ 8.000</td><td><span class="trend up">▲ +48.1%</span></td><td>$ 8.800</td><td><span class="trend up">▲ +57.1%</span></td></tr>
+      <tr><td>Octubre</td><td>$ 7.300</td><td><span class="trend down">▼ -8.8%</span></td><td>$ 10.500</td><td><span class="trend up">▲ +19.3%</span></td></tr>
+      <tr><td>Noviembre</td><td>$ 11.250</td><td><span class="trend up">▲ +54.1%</span></td><td>$ 15.050</td><td><span class="trend up">▲ +43.3%</span></td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<div class="section" data-section="registro">
+  <div class="panel"><div class="panel-head"><h3>Registro de ventas</h3><button class="btn" data-open-modal="modal-venta">+ Nueva venta</button></div>
+  <div class="toolbar"><select><option>Comercial: todos</option><option>Cotización</option><option>Confirmada</option><option>Entregada</option><option>Finalizada</option><option>Anulada</option></select><select><option>Pago: todos</option><option>Pendiente</option><option>Parcial</option><option>Pagado</option></select></div>
+  <table><thead><tr><th>N°</th><th>Cliente</th><th>Fecha</th><th>Total</th><th>Pagado</th><th>Saldo</th><th>Método de pago</th><th>Comercial</th><th>Pago</th></tr></thead><tbody data-table="ventas"></tbody></table></div>
+</div>
+
+<div class="section" data-section="cobros">
+  <div class="grid2">
+    <div class="panel"><h3>Cobros recibidos</h3><table><thead><tr><th>Fecha</th><th>Venta</th><th>Cliente</th><th>Monto</th><th>Estado</th></tr></thead><tbody>
+      <tr><td>11/11/2026</td><td>V-1024</td><td>Laura Méndez</td><td>$ 320</td><td><span class="pill ok">Registrado</span></td></tr>
+      <tr><td>11/11/2026</td><td>V-1025</td><td>TecnoServicios Andina</td><td>$ 2.000</td><td><span class="pill ok">Registrado</span></td></tr>
+    </tbody></table></div>
+    <div class="panel"><h3>Saldos por cobrar</h3><table><thead><tr><th>Venta</th><th>Cliente</th><th>Saldo</th><th>Estado</th></tr></thead><tbody>
+      <tr><td>V-1025</td><td>TecnoServicios Andina</td><td>$ 2.800</td><td><span class="pill warn">Parcial</span></td></tr>
+      <tr><td>V-1026</td><td>María Pérez</td><td>$ 280</td><td><span class="pill muted">Pendiente</span></td></tr>
+    </tbody></table><p style="color:var(--muted);font-size:12px;margin-top:8px">Detalle completo en <a href="finanzas.html">Finanzas</a>.</p></div>
+  </div>
+</div>
+
+<hr style='margin:24px 0;border:none;border-top:1px solid #d9e2ec'>
+<div class="cards">
+<div class="card stat"><h3>Ingresos (mes)</h3><div class="value">$ 12.340</div><div class="note">Por pagos recibidos</div></div>
+<div class="card stat"><h3>Egresos (mes)</h3><div class="value">$ 8.950</div><div class="note">Pagos a proveedores/gastos</div></div>
+<div class="card stat"><h3>Por cobrar</h3><div class="value">$ 4.120</div><div class="note">Saldos pendientes</div></div>
+<div class="card stat"><h3>Por pagar</h3><div class="value">$ 1.950</div><div class="note">Saldos a proveedores</div></div></div>
+<div class="panel"><div class="panel-head"><h3>Movimientos recientes</h3><button class="btn" data-open-modal="modal-finanzas">+ Registrar pago/movimiento</button></div><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Origen</th><th>Método de pago</th><th>Descripción</th><th>Monto</th><th>Estado</th></tr></thead><tbody data-table="finanzas"></tbody></table></div></div>
+</section></main></div>
+<script>
+(function(){try{var _rs=history.replaceState.bind(history);var _ps=history.pushState.bind(history);history.replaceState=function(){try{return _rs.apply(history,arguments)}catch(e){}};history.pushState=function(){try{return _ps.apply(history,arguments)}catch(e){}};}catch(e){}})();
+</script><script>
+(function () {
+  var STORAGE_VER = 'renova_demo_v2_';
+  var btn = document.getElementById('menuBtn');
+  var sb = document.querySelector('.sidebar');
+  if (btn && sb) { btn.addEventListener('click', function () { sb.classList.toggle('open'); }); }
+  var path = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+  document.querySelectorAll('.nav a').forEach(function (a) {
+    var href = (a.getAttribute('href') || '').toLowerCase();
+    if (href === path) a.classList.add('active');
+  });
+
+  // Tabs
+  var tabs = document.querySelectorAll('[data-tab]');
+  if (tabs.length) {
+    function show(id) {
+      document.querySelectorAll('[data-tab]').forEach(function (t) { t.classList.toggle('active', t.getAttribute('data-tab') === id); });
+      document.querySelectorAll('[data-section]').forEach(function (s) { s.classList.toggle('active', s.getAttribute('data-section') === id); });
+      if (history.replaceState) history.replaceState(null, '', '#' + id); else location.hash = id;
+    }
+    tabs.forEach(function (t) { t.addEventListener('click', function (e) { e.preventDefault(); show(t.getAttribute('data-tab')); }); });
+    var init = (location.hash || '').replace('#', '');
+    var first = tabs[0].getAttribute('data-tab');
+    var exists = false; tabs.forEach(function (t) { if (t.getAttribute('data-tab') === init) exists = true; });
+    show(exists ? init : first);
+  }
+
+  function load(key, fallback) { try { var v = localStorage.getItem(STORAGE_VER + key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
+  function save(key, value) { try { localStorage.setItem(STORAGE_VER + key, JSON.stringify(value)); } catch (e) {} }
+  function money(n) { n = Number(n || 0); return '$ ' + n.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]; }); }
+
+  var seeds = {
+    clientes: [
+      { nombre:'Laura Méndez', tipo:'Persona', documento:'CC 10293847', correo:'laura.mendez@correo.demo', telefono:'300 111 2233', ciudad:'Bogotá', estado:'Activo' },
+      { nombre:'TecnoServicios Andina SAS', tipo:'Empresa', documento:'NIT 900123456-1', correo:'compras@andina.demo', telefono:'601 555 2200', ciudad:'Bogotá', estado:'Activo' },
+      { nombre:'Carlos Ríos', tipo:'Persona', documento:'CC 79881234', correo:'carlos.rios@correo.demo', telefono:'311 444 3344', ciudad:'Medellín', estado:'Activo' },
+      { nombre:'Comercial Norte Ltda.', tipo:'Empresa', documento:'NIT 901222333-4', correo:'contacto@norte.demo', telefono:'604 555 7788', ciudad:'Medellín', estado:'Activo' },
+      { nombre:'María Fernanda Pérez', tipo:'Persona', documento:'CC 52987654', correo:'maria.perez@correo.demo', telefono:'320 777 8899', ciudad:'Cali', estado:'Activo' },
+      { nombre:'Soluciones Educativas del Valle', tipo:'Empresa', documento:'NIT 900987654-2', correo:'compras@seduvalle.demo', telefono:'602 333 1122', ciudad:'Cali', estado:'Activo' }
+    ],
+    prospectos: [
+      { nombre:'Andrés Gómez', contacto:'andres.gomez@correo.demo / 312 000 1100', interes:'Laptop Lenovo ThinkPad reacondicionada', origen:'WhatsApp', responsable:'Camila Torres', estado:'Nuevo' },
+      { nombre:'Distribuciones Eco S.A.S.', contacto:'gerencia@eco.demo / 301 555 5500', interes:'Lote 10 tablets iPad reacondicionadas', origen:'Referido', responsable:'Juan Pérez', estado:'Contactado' },
+      { nombre:'Paula Restrepo', contacto:'paula.restrepo@correo.demo', interes:'iPhone 12 reacondicionado 128GB', origen:'Web', responsable:'Camila Torres', estado:'Calificado' },
+      { nombre:'Colegio San Martín', contacto:'sistemas@colegiosm.demo', interes:'20 laptops para sala de informática', origen:'Llamada', responsable:'Juan Pérez', estado:'Propuesta enviada' }
+    ],
+    seguimiento: [
+      { titulo:'Renovación equipos oficina', relacionado:'TecnoServicios Andina SAS', etapa:'Negociación', valor:'6200', fecha:'2026-11-20', responsable:'Juan Pérez' },
+      { titulo:'Compra iPhone reacondicionado', relacionado:'Paula Restrepo', etapa:'Propuesta', valor:'420', fecha:'2026-11-18', responsable:'Camila Torres' },
+      { titulo:'Lote tablets educativas', relacionado:'Colegio San Martín', etapa:'Prospección', valor:'9500', fecha:'2026-11-30', responsable:'Juan Pérez' },
+      { titulo:'Actualización portátiles equipo ventas', relacionado:'Comercial Norte Ltda.', etapa:'Contactado', valor:'3800', fecha:'2026-11-25', responsable:'Camila Torres' }
+    ],
+    atencion: [
+      { caso:'AT-031', cliente:'Laura Méndez', tipo:'Garantía', ref:'NS-A1002 / V-1024', prioridad:'Alta', asunto:'Batería con descarga rápida', estado:'En proceso' },
+      { caso:'AT-032', cliente:'Carlos Ríos', tipo:'Consulta', ref:'V-1018', prioridad:'Baja', asunto:'Duda sobre cobertura de garantía', estado:'Resuelta' },
+      { caso:'AT-033', cliente:'TecnoServicios Andina SAS', tipo:'Devolución', ref:'NS-T2201 / V-1015', prioridad:'Alta', asunto:'Equipo presenta fallo intermitente', estado:'Pendiente revisión' },
+      { caso:'AT-034', cliente:'María Fernanda Pérez', tipo:'Soporte', ref:'V-1026', prioridad:'Media', asunto:'Configuración inicial de iPad', estado:'Abierta' }
+    ],
+    productos: [
+      { sku:'CEL-IPH-12-128', modelo:'iPhone 12 128GB (Reacondicionado)', categoria:'Celulares', marca:'Apple', garantia:'6', estado:'Activo' },
+      { sku:'CEL-SAM-A54-128', modelo:'Samsung Galaxy A54 128GB (Reacondicionado)', categoria:'Celulares', marca:'Samsung', garantia:'6', estado:'Activo' },
+      { sku:'CEL-XIA-RN12-128', modelo:'Xiaomi Redmi Note 12 128GB (Reacondicionado)', categoria:'Celulares', marca:'Xiaomi', garantia:'6', estado:'Activo' },
+      { sku:'LAP-LEN-T14-I5', modelo:'Lenovo ThinkPad T14 i5 16GB/512GB (Reacondicionado)', categoria:'Laptops', marca:'Lenovo', garantia:'12', estado:'Activo' },
+      { sku:'LAP-HP-840-I5', modelo:'HP EliteBook 840 G6 i5 16GB/256GB (Reacondicionado)', categoria:'Laptops', marca:'HP', garantia:'12', estado:'Activo' },
+      { sku:'TAB-APP-IP9-64', modelo:'iPad 9ª Gen 64GB WiFi (Reacondicionado)', categoria:'Tablets', marca:'Apple', garantia:'6', estado:'Activo' },
+      { sku:'TAB-SAM-S6L-64', modelo:'Samsung Galaxy Tab S6 Lite 64GB (Reacondicionado)', categoria:'Tablets', marca:'Samsung', garantia:'6', estado:'Activo' }
+    ],
+    inventario: [
+      { serie:'RD-IPH12-0001', producto:'iPhone 12 128GB (Reacondicionado)', imei:'356789110101', grado:'A', compra:'DC-0045', estado:'Disponible' },
+      { serie:'RD-IPH12-0002', producto:'iPhone 12 128GB (Reacondicionado)', imei:'356789110102', grado:'A', compra:'DC-0045', estado:'Reservada' },
+      { serie:'RD-A54-0101', producto:'Samsung Galaxy A54 128GB (Reacondicionado)', imei:'358001220101', grado:'A', compra:'DC-0046', estado:'Disponible' },
+      { serie:'RD-A54-0102', producto:'Samsung Galaxy A54 128GB (Reacondicionado)', imei:'358001220102', grado:'B', compra:'DC-0046', estado:'Disponible' },
+      { serie:'RD-T14-0201', producto:'Lenovo ThinkPad T14 i5 16GB/512GB (Reacondicionado)', imei:'—', grado:'A', compra:'DC-0043', estado:'Vendido' },
+      { serie:'RD-T14-0202', producto:'Lenovo ThinkPad T14 i5 16GB/512GB (Reacondicionado)', imei:'—', grado:'B', compra:'DC-0043', estado:'Pendiente revisión' },
+      { serie:'RD-IP9-0301', producto:'iPad 9ª Gen 64GB WiFi (Reacondicionado)', imei:'—', grado:'A', compra:'DC-0044', estado:'Disponible' },
+      { serie:'RD-S6L-0401', producto:'Samsung Galaxy Tab S6 Lite 64GB (Reacondicionado)', imei:'351009990401', grado:'A', compra:'DC-0047', estado:'Disponible' }
+    ],
+    proveedores: [
+      { nombre:'TechCycle Mayorista', contacto:'Andrés Molina', correo:'ventas@techcycle.demo', telefono:'601 700 1100', estado:'Activo' },
+      { nombre:'ReNova Supply Group', contacto:'Lucía Herrera', correo:'compras@renovasupply.demo', telefono:'604 700 2200', estado:'Activo' },
+      { nombre:'Global Devices Import', contacto:'Jorge Salazar', correo:'contacto@globaldevices.demo', telefono:'602 700 3300', estado:'Activo' },
+      { nombre:'Circular Tech Colombia', contacto:'Diana Ruiz', correo:'info@circulartech.demo', telefono:'601 700 4400', estado:'Activo' }
+    ],
+    compras: [
+      { num:'DC-0043', fecha:'2026-10-20', proveedor:'TechCycle Mayorista', total:5200, pagado:5200, saldo:0, comercial:'Confirmada', pago:'Pagado', metodo:'Transferencia bancaria' },
+      { num:'DC-0044', fecha:'2026-10-28', proveedor:'ReNova Supply Group', total:3600, pagado:3600, saldo:0, comercial:'Confirmada', pago:'Pagado', metodo:'Transferencia bancaria' },
+      { num:'DC-0045', fecha:'2026-11-05', proveedor:'Global Devices Import', total:7800, pagado:7800, saldo:0, comercial:'Confirmada', pago:'Pagado', metodo:'Transferencia bancaria' },
+      { num:'DC-0046', fecha:'2026-11-10', proveedor:'TechCycle Mayorista', total:3450, pagado:1500, saldo:1950, comercial:'Confirmada', pago:'Parcial', metodo:'PSE' },
+      { num:'DC-0047', fecha:'2026-11-14', proveedor:'Circular Tech Colombia', total:2100, pagado:0, saldo:2100, comercial:'Borrador', pago:'Pendiente', metodo:'Crédito / pago aplazado' }
+    ],
+    ventas: [
+      { num:'V-1020', cliente:'Carlos Ríos', fecha:'2026-11-02', total:580, pagado:580, saldo:0, comercial:'Finalizada', pago:'Pagado', metodo:'Transferencia bancaria' },
+      { num:'V-1022', cliente:'Comercial Norte Ltda.', fecha:'2026-11-06', total:2400, pagado:2400, saldo:0, comercial:'Entregada', pago:'Pagado', metodo:'Tarjeta crédito' },
+      { num:'V-1024', cliente:'Laura Méndez', fecha:'2026-11-11', total:320, pagado:320, saldo:0, comercial:'Entregada', pago:'Pagado', metodo:'Efectivo' },
+      { num:'V-1025', cliente:'TecnoServicios Andina SAS', fecha:'2026-11-12', total:4800, pagado:2000, saldo:2800, comercial:'Confirmada', pago:'Parcial', metodo:'Nequi' },
+      { num:'V-1026', cliente:'María Fernanda Pérez', fecha:'2026-11-14', total:450, pagado:0, saldo:450, comercial:'Cotización', pago:'Pendiente', metodo:'PSE' },
+      { num:'V-1027', cliente:'Soluciones Educativas del Valle', fecha:'2026-11-15', total:6200, pagado:3100, saldo:3100, comercial:'Confirmada', pago:'Parcial', metodo:'Transferencia bancaria' }
+    ],
+    finanzas: [
+      { fecha:'2026-11-02', tipo:'Ingreso', origen:'Venta V-1020', descripcion:'Pago total cliente Carlos Ríos', monto:580, metodo:'Transferencia bancaria', estado:'Registrado' },
+      { fecha:'2026-11-05', tipo:'Egreso', origen:'Compra DC-0045', descripcion:'Pago a Global Devices Import', monto:7800, metodo:'Transferencia bancaria', estado:'Registrado' },
+      { fecha:'2026-11-06', tipo:'Ingreso', origen:'Venta V-1022', descripcion:'Pago Comercial Norte Ltda.', monto:2400, metodo:'Tarjeta crédito', estado:'Registrado' },
+      { fecha:'2026-11-10', tipo:'Egreso', origen:'Compra DC-0046', descripcion:'Abono a TechCycle Mayorista', monto:1500, metodo:'PSE', estado:'Registrado' },
+      { fecha:'2026-11-12', tipo:'Ingreso', origen:'Venta V-1025', descripcion:'Abono TecnoServicios Andina SAS', monto:2000, metodo:'Nequi', estado:'Registrado' },
+      { fecha:'2026-11-15', tipo:'Ingreso', origen:'Venta V-1027', descripcion:'Anticipo Soluciones Educativas del Valle', monto:3100, metodo:'Transferencia bancaria', estado:'Registrado' }
+    ]
+  };
+
+  function getData(key) {
+    var d = load(key, null);
+    if (!d) { d = (seeds[key] || []).slice(); save(key, d); }
+    return d;
+  }
+  function setData(key, arr) { save(key, arr); }
+
+  function openModal(id){var m=document.getElementById(id); if(m) m.classList.add('active');}
+  function closeModal(m){if(m) m.classList.remove('active');}
+  document.querySelectorAll('[data-open-modal]').forEach(function(b){ b.addEventListener('click',function(e){e.preventDefault(); openModal(b.getAttribute('data-open-modal'));}); });
+  document.querySelectorAll('.modal').forEach(function(m){ m.addEventListener('click',function(e){if(e.target===m || e.target.hasAttribute('data-close-modal')) closeModal(m);}); });
+  document.querySelectorAll('[data-close-modal]').forEach(function(b){ b.addEventListener('click',function(e){e.preventDefault(); var m=b.closest('.modal'); if(m) closeModal(m);}); });
+
+  document.querySelectorAll('form[data-demo-form]').forEach(function(f){
+    f.addEventListener('submit',function(e){
+      e.preventDefault();
+      var store = f.getAttribute('data-store');
+      if (store) {
+        var item = {};
+        f.querySelectorAll('[name]').forEach(function(inp){ item[inp.name] = inp.value; });
+        if (store === 'compras') {
+          item.total = Number(item.total || 0); item.pagado = Number(item.pagado || 0);
+          item.saldo = Math.max(0, item.total - item.pagado);
+          if (!item.num) item.num = 'DC-' + (1000 + getData('compras').length + 50);
+          if (!item.pago) item.pago = item.saldo <= 0 ? 'Pagado' : (item.pagado > 0 ? 'Parcial' : 'Pendiente');
+          if (!item.comercial) item.comercial = 'Confirmada';
+          if (!item.fecha) item.fecha = new Date().toISOString().slice(0,10);
+        }
+        if (store === 'ventas') {
+          item.total = Number(item.total || 0); item.pagado = Number(item.pagado || 0);
+          item.saldo = item.saldo === '' || item.saldo == null ? Math.max(0, item.total - item.pagado) : Number(item.saldo);
+          if (!item.num) item.num = 'V-' + (1000 + getData('ventas').length + 30);
+          if (!item.pago) item.pago = item.saldo <= 0 ? 'Pagado' : (item.pagado > 0 ? 'Parcial' : 'Pendiente');
+          if (!item.comercial) item.comercial = 'Cotización';
+          if (!item.fecha) item.fecha = new Date().toISOString().slice(0,10);
+        }
+        if (store === 'clientes' && !item.estado) item.estado = 'Activo';
+        if (store === 'seguimiento' && !item.titulo) item.titulo = item.relacionado || 'Seguimiento';
+        if (store === 'atencion' && !item.caso) item.caso = 'AT-' + (100 + getData('atencion').length + 1);
+        var arr = getData(store); arr.unshift(item); setData(store, arr);
+        renderPage();
+      }
+      var m=f.closest('.modal'); if(m) closeModal(m);
+      f.reset();
+    });
+  });
+
+  function pill(text) {
+    var t = String(text||'').toLowerCase();
+    var cls = 'muted';
+    if (/activo|confirm|pagad|entreg|final|dispon|resuelt|registrad/.test(t)) cls='ok';
+    else if (/parcial|reserv|proceso|contact|revisión|revision|negoci|abierta|pendiente|borrador|propuesta/.test(t)) cls='warn';
+    else if (/nuevo|info|cotiz|prospecci/.test(t)) cls='info';
+    return '<span class="pill '+cls+'">'+esc(text||'')+'</span>';
+  }
+  function setText(sel, val){ var el=document.querySelector(sel); if(el) el.textContent=val; }
+
+  function renderClientes() {
+    var tbody = document.querySelector('[data-table="clientes"]'); var data = getData('clientes');
+    if (tbody) tbody.innerHTML = data.map(function(c){ return '<tr><td>'+esc(c.nombre)+'</td><td>'+esc(c.tipo||'')+'</td><td>'+esc(c.documento||'—')+'</td><td>'+esc(c.correo||'—')+'</td><td>'+esc(c.telefono||'—')+'</td><td>'+esc(c.ciudad||'')+'</td><td>'+pill(c.estado||'Activo')+'</td></tr>'; }).join('');
+    setText('[data-count="clientes"]', String(data.filter(function(c){return (c.estado||'Activo')==='Activo';}).length));
+  }
+  function renderProspectos(){
+    var data=getData('prospectos'); var tbody=document.querySelector('[data-table="prospectos"]');
+    if(tbody) tbody.innerHTML=data.map(function(p){ return '<tr><td>'+esc(p.nombre||'')+'</td><td>'+esc(p.contacto||'')+'</td><td>'+esc(p.interes||'')+'</td><td>'+esc(p.origen||'')+'</td><td>'+esc(p.responsable||'')+'</td><td>'+pill(p.estado||'Nuevo')+'</td></tr>'; }).join('');
+    setText('[data-count="prospectos"]', String(data.length));
+  }
+  function renderSeguimiento(){
+    var data=getData('seguimiento'); var tbody=document.querySelector('[data-table="seguimiento"]');
+    if(tbody) tbody.innerHTML=data.map(function(s){ return '<tr><td>'+esc(s.titulo||'')+'</td><td>'+esc(s.relacionado||'')+'</td><td>'+pill(s.etapa||'')+'</td><td>'+money(s.valor)+'</td><td>'+esc(s.fecha||'')+'</td><td>'+esc(s.responsable||'')+'</td></tr>'; }).join('');
+  }
+  function renderAtencion(){
+    var data=getData('atencion'); var tbody=document.querySelector('[data-table="atencion"]');
+    if(tbody) tbody.innerHTML=data.map(function(a){ return '<tr><td>'+esc(a.caso||'')+'</td><td>'+esc(a.cliente||'')+'</td><td>'+esc(a.tipo||'')+'</td><td>'+esc(a.ref||'')+'</td><td>'+pill(a.prioridad||'')+'</td><td>'+esc(a.asunto||'')+'</td><td>'+pill(a.estado||'')+'</td></tr>'; }).join('');
+  }
+  function renderProductos(){
+    var data=getData('productos'); var tbody=document.querySelector('[data-table="productos"]');
+    if(tbody) tbody.innerHTML=data.map(function(p){ return '<tr><td>'+esc(p.sku||'')+'</td><td>'+esc(p.modelo||'')+'</td><td>'+esc(p.categoria||'')+'</td><td>'+esc(p.marca||'')+'</td><td>'+esc((p.garantia||'0')+' meses')+'</td><td>'+pill(p.estado||'Activo')+'</td></tr>'; }).join('');
+  }
+  function renderInventario(){
+    var data=getData('inventario'); var tbody=document.querySelector('[data-table="inventario"]');
+    if(tbody) tbody.innerHTML=data.map(function(u){ return '<tr><td>'+esc(u.serie||'')+'</td><td>'+esc(u.producto||'')+'</td><td>'+esc(u.imei||'—')+'</td><td>'+esc(u.grado||'')+'</td><td>'+esc(u.compra||'')+'</td><td>'+pill(u.estado||'Disponible')+'</td></tr>'; }).join('');
+    var disp=data.filter(function(i){return (i.estado||'')==='Disponible';}).length;
+    setText('[data-count="inventario"]', String(data.length));
+    setText('[data-count="inventario-disponible"]', String(disp));
+  }
+  function renderProveedores(){
+    var data=getData('proveedores'); var tbody=document.querySelector('[data-table="proveedores"]');
+    if(tbody) tbody.innerHTML=data.map(function(p){ return '<tr><td>'+esc(p.nombre||'')+'</td><td>'+esc(p.contacto||'')+'</td><td>'+esc(p.correo||'')+'</td><td>'+esc(p.telefono||'')+'</td><td>'+pill(p.estado||'Activo')+'</td></tr>'; }).join('');
+  }
+  function renderCompras() {
+    var data = getData('compras'); var tbody = document.querySelector('[data-table="compras"]');
+    if (tbody) tbody.innerHTML = data.map(function(c){ return '<tr><td>'+esc(c.num)+'</td><td>'+esc(c.fecha||'')+'</td><td>'+esc(c.proveedor||'')+'</td><td>'+money(c.total)+'</td><td>'+money(c.pagado)+'</td><td>'+money(c.saldo)+'</td><td>'+esc(c.metodo||'—')+'</td><td>'+pill(c.comercial||'Confirmada')+'</td><td>'+pill(c.pago||'Pendiente')+'</td></tr>'; }).join('');
+    var total = data.reduce(function(s,c){return s+Number(c.total||0);},0);
+    var pagado = data.reduce(function(s,c){return s+Number(c.pagado||0);},0);
+    var saldo = data.reduce(function(s,c){return s+Number(c.saldo||0);},0);
+    setText('[data-sum="compras-total"]', money(total)); setText('[data-sum="compras-pagado"]', money(pagado));
+    setText('[data-sum="compras-saldo"]', money(saldo)); setText('[data-sum="compras-count"]', String(data.length));
+  }
+  function renderVentas() {
+    var data = getData('ventas'); var tbody = document.querySelector('[data-table="ventas"]');
+    if (tbody) tbody.innerHTML = data.map(function(v){ return '<tr><td>'+esc(v.num)+'</td><td>'+esc(v.cliente||'')+'</td><td>'+esc(v.fecha||'')+'</td><td>'+money(v.total)+'</td><td>'+money(v.pagado)+'</td><td>'+money(v.saldo)+'</td><td>'+esc(v.metodo||'—')+'</td><td>'+pill(v.comercial||'Cotización')+'</td><td>'+pill(v.pago||'Pendiente')+'</td></tr>'; }).join('');
+    var total = data.reduce(function(s,v){return s+Number(v.total||0);},0);
+    var pagado = data.reduce(function(s,v){return s+Number(v.pagado||0);},0);
+    var saldo = data.reduce(function(s,v){return s+Number(v.saldo||0);},0);
+    setText('[data-sum="ventas-total"]', money(total)); setText('[data-sum="ventas-cobrado"]', money(pagado));
+    setText('[data-sum="ventas-saldo"]', money(saldo)); setText('[data-sum="ventas-count"]', String(data.length));
+  }
+  function renderFinanzas(){
+    var data=getData('finanzas'); var tbody=document.querySelector('[data-table="finanzas"]');
+    if(tbody) tbody.innerHTML=data.map(function(f){ return '<tr><td>'+esc(f.fecha||'')+'</td><td>'+pill(f.tipo||'')+'</td><td>'+esc(f.origen||'')+'</td><td>'+esc(f.metodo||'—')+'</td><td>'+esc(f.descripcion||'')+'</td><td>'+money(f.monto)+'</td><td>'+pill(f.estado||'Registrado')+'</td></tr>'; }).join('');
+  }
+  function renderDashboard(){
+    var clientes=getData('clientes'); setText('[data-count="clientes"]', String(clientes.filter(function(c){return (c.estado||'Activo')==='Activo';}).length));
+    var prospectos=getData('prospectos'); setText('[data-count="prospectos"]', String(prospectos.length));
+    var inv=getData('inventario'); var disp=inv.filter(function(i){return (i.estado||'')==='Disponible';}).length; setText('[data-count="inventario-disponible"]', String(disp));
+    var ventas=getData('ventas'); var cobrado=ventas.reduce(function(s,v){return s+Number(v.pagado||0);},0); setText('[data-sum="ventas-cobrado"]', money(cobrado));
+  }
+  function renderPage(){ renderClientes(); renderProspectos(); renderSeguimiento(); renderAtencion(); renderProductos(); renderInventario(); renderProveedores(); renderCompras(); renderVentas(); renderFinanzas(); renderDashboard(); }
+
+  renderPage();
+})();
+
+</script>
+<script>
+function showMain(id,btn){document.querySelectorAll('.main-view').forEach(v=>v.classList.remove('active'));document.querySelectorAll('.view-tab').forEach(b=>b.classList.remove('active'));document.getElementById('main-'+id).classList.add('active');btn.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+</script>
+<script>(function () {
+  const processes = {
+    g1: {
+      macro: 'Procesos de Gobierno', code: 'G1', name: 'Dirección y planificación estratégica',
+      description: 'Define el rumbo de Renova Digital, establece prioridades y orienta las decisiones para el crecimiento sostenible del negocio de tecnología reacondicionada.',
+      objective: 'Establecer la misión, visión, objetivos y planes que guíen la operación y el crecimiento de Renova Digital.',
+      activities: ['Definir la misión, visión y objetivos de Renova Digital.', 'Establecer metas de crecimiento, ventas y posicionamiento.', 'Planificar actividades comerciales, operativas y financieras.', 'Definir prioridades de inversión en compra, reacondicionamiento y canales de venta.', 'Analizar oportunidades de expansión y nuevos canales.', 'Definir estrategias de diferenciación frente a competidores y equipos nuevos.'],
+      responsible: 'Dirección / Administrador general.',
+      inputs: ['Resultados de ventas y rentabilidad.', 'Análisis del mercado de tecnología reacondicionada.', 'Capacidad operativa y financiera.', 'Retroalimentación de clientes y áreas.'],
+      outputs: ['Plan estratégico y metas.', 'Presupuesto y prioridades.', 'Políticas generales y hoja de ruta.'],
+      kpis: ['% de cumplimiento de objetivos estratégicos', 'Crecimiento de ventas mensual/trimestral', 'Margen de rentabilidad', 'Nivel de cumplimiento del plan operativo'],
+      related: ['g2', 'g4', 'v6', 'a2'],
+      importance: 'Orienta todas las decisiones de la empresa y asegura que la compra, reacondicionamiento y venta de dispositivos se realicen con foco en rentabilidad, calidad y confianza del cliente.'
+    },
+    g2: {
+      macro: 'Procesos de Gobierno', code: 'G2', name: 'Gestión estratégica del negocio',
+      description: 'Analiza el entorno, el mercado y el desempeño general para tomar decisiones que fortalezcan la competitividad de Renova Digital.',
+      objective: 'Evaluar el desempeño del negocio y el mercado para tomar decisiones oportunas que mejoren rentabilidad y competitividad.',
+      activities: ['Evaluar el desempeño general de la empresa.', 'Analizar el mercado de celulares, laptops y tablets reacondicionadas.', 'Identificar tendencias de consumo y precios.', 'Evaluar oportunidades, amenazas y riesgos.', 'Tomar decisiones para mejorar rentabilidad y competitividad.', 'Definir políticas generales de funcionamiento comercial y operativo.'],
+      responsible: 'Dirección / Administrador general (con apoyo de responsable comercial y financiero).',
+      inputs: ['Reportes de ventas e inventario.', 'Información de proveedores y competencia.', 'Indicadores financieros y operativos.', 'Retroalimentación de clientes.'],
+      outputs: ['Decisiones estratégicas.', 'Ajustes de política comercial/precios.', 'Planes de acción por oportunidad o riesgo.'],
+      kpis: ['Rentabilidad por categoría de producto', 'Participación en canales de venta', 'Variación de costos de adquisición', 'Tasa de conversión comercial'],
+      related: ['g1', 'v1', 'v6', 'a2'],
+      importance: 'Permite adaptar la empresa a cambios en demanda, precios y disponibilidad de equipos, protegiendo el margen y la sostenibilidad del negocio.'
+    },
+    g3: {
+      macro: 'Procesos de Gobierno', code: 'G3', name: 'Gestión de calidad y riesgos',
+      description: 'Establece estándares de calidad, controles y medidas preventivas para asegurar productos confiables y operación segura.',
+      objective: 'Garantizar que los dispositivos reacondicionados cumplan estándares de calidad y que los riesgos operativos, comerciales y financieros se gestionen adecuadamente.',
+      activities: ['Definir estándares de calidad para dispositivos reacondicionados.', 'Establecer políticas de revisión, pruebas y aprobación.', 'Identificar riesgos comerciales, operativos, financieros y tecnológicos.', 'Definir medidas para prevenir pérdidas, fraudes o fallas.', 'Supervisar cumplimiento de garantías, devoluciones y protección al consumidor.', 'Verificar el borrado seguro de datos en equipos recibidos.'],
+      responsible: 'Dirección / Administrador general y técnico de reacondicionamiento.',
+      inputs: ['Resultados de diagnóstico y control de calidad.', 'Reclamos y garantías.', 'Reportes de inventario y finanzas.', 'Normativa aplicable y políticas internas.'],
+      outputs: ['Políticas de calidad y garantía.', 'Matriz de riesgos y controles.', 'Acciones preventivas/correctivas.'],
+      kpis: ['% de equipos aprobados en control de calidad', 'Tasa de devoluciones por falla', 'Tasa de reclamos de garantía', 'Número de incidentes/riesgos mitigados'],
+      related: ['v2', 'v3', 'v4', 'v8', 'a7', 'a8'],
+      importance: 'Protege la confianza del cliente y la reputación de Renova Digital, reduciendo devoluciones, pérdidas y riesgos legales.'
+    },
+    g4: {
+      macro: 'Procesos de Gobierno', code: 'G4', name: 'Control de gestión y evaluación de resultados',
+      description: 'Supervisa el cumplimiento de metas y el desempeño de las áreas mediante indicadores y acciones correctivas.',
+      objective: 'Medir, evaluar y corregir el desempeño de la empresa para asegurar el cumplimiento de los objetivos.',
+      activities: ['Supervisar el cumplimiento de objetivos y planes.', 'Evaluar ventas, rentabilidad y desempeño operativo.', 'Revisar indicadores de gestión por proceso.', 'Identificar desviaciones y causas.', 'Implementar acciones correctivas y de seguimiento.', 'Evaluar el cumplimiento de responsabilidades por área/cargo.'],
+      responsible: 'Dirección / Administrador general.',
+      inputs: ['Indicadores KPI.', 'Reportes del CRM/ERP.', 'Informes financieros y operativos.', 'Resultados de auditorías o revisiones internas.'],
+      outputs: ['Informes de gestión.', 'Planes correctivos.', 'Decisiones de ajuste operativo.'],
+      kpis: ['% de cumplimiento de KPIs', 'Desviación de presupuesto', 'Tiempo de cierre de acciones correctivas', 'Cumplimiento de metas por área'],
+      related: ['g1', 'g5', 'a2', 'v6'],
+      importance: 'Permite detectar problemas a tiempo (baja rotación, alta garantía, bajo recaudo) y tomar decisiones basadas en datos.'
+    },
+    g5: {
+      macro: 'Procesos de Gobierno', code: 'G5', name: 'Innovación y mejora continua',
+      description: 'Impulsa la modernización, la eficiencia y la mejora operativa en los procesos de Renova Digital.',
+      objective: 'Mejorar continuamente los procesos, servicios y herramientas de la empresa para aumentar valor y competitividad.',
+      activities: ['Evaluar nuevas oportunidades de negocio y servicios.', 'Implementar mejoras en procesos operativos y comerciales.', 'Aprovechar herramientas digitales (CRM, ERP, web, analítica).', 'Analizar necesidades y retroalimentación de clientes.', 'Promover la prolongación de la vida útil de los equipos reacondicionados.', 'Impulsar modernización y capacitación del equipo.'],
+      responsible: 'Dirección / Administrador general con apoyo de tecnología.',
+      inputs: ['Retroalimentación de clientes.', 'Resultados de KPIs.', 'Incidentes, reclamos y propuestas internas.', 'Tendencias tecnológicas.'],
+      outputs: ['Iniciativas de mejora implementadas.', 'Procesos actualizados.', 'Nuevas funcionalidades o prácticas.'],
+      kpis: ['Número de mejoras implementadas', 'Reducción de retrabajos', 'Reducción de tiempo de ciclo', 'Índice de satisfacción del cliente'],
+      related: ['g4', 'v3', 'v8', 'v9', 'a4'],
+      importance: 'Mantiene a Renova Digital competitiva, eficiente y alineada con las expectativas del cliente y la mejora continua.'
+    },
+
+    // VALOR
+    v1: {
+      macro: 'Procesos Agregadores de Valor', code: 'V1', name: 'Gestión de abastecimiento y adquisición de dispositivos',
+      description: 'Asegura el suministro de celulares, laptops y tablets con potencial de reacondicionamiento, a costos y condiciones adecuadas.',
+      objective: 'Adquirir dispositivos con buena relación costo/estado/demanda para alimentar el proceso de reacondicionamiento.',
+      activities: ['Identificar proveedores y fuentes de abastecimiento.', 'Buscar dispositivos usados, devueltos o lotes disponibles.', 'Evaluar proveedores, precios y condiciones.', 'Negociar compras según demanda y rentabilidad.', 'Seleccionar equipos por marca, modelo, estado y potencial de venta.', 'Registrar compras y acuerdos.'],
+      responsible: 'Responsable de compras y abastecimiento / Administrador general.',
+      inputs: ['Demanda y rotación de inventario.', 'Presupuesto disponible.', 'Catálogo de productos objetivo.', 'Evaluación de proveedores.'],
+      outputs: ['Órdenes/compras realizadas.', 'Dispositivos adquiridos para ingreso.', 'Información de costos y proveedor.'],
+      kpis: ['Costo promedio de adquisición', 'Cumplimiento de proveedor', 'Tiempo de abastecimiento', '% de unidades adquiridas aptas para reacondicionamiento'],
+      related: ['g2', 'v2', 'a2', 'a6'],
+      importance: 'Define la disponibilidad, el costo base y la rentabilidad de los productos que Renova Digital podrá vender.'
+    },
+    v2: {
+      macro: 'Procesos Agregadores de Valor', code: 'V2', name: 'Recepción y diagnóstico técnico',
+      description: 'Recibe, identifica y evalúa técnicamente cada dispositivo para determinar su viabilidad de reacondicionamiento.',
+      objective: 'Registrar y diagnosticar correctamente los equipos recibidos para definir acciones técnicas y comerciales.',
+      activities: ['Recibir dispositivos adquiridos.', 'Registrar equipo por marca, modelo, serial/IMEI y características.', 'Revisar estado físico y estético.', 'Evaluar funcionamiento de componentes clave.', 'Identificar daños, fallas o repuestos necesarios.', 'Clasificar como apto, reparable o no viable.'],
+      responsible: 'Técnico de reacondicionamiento / Responsable de inventario.',
+      inputs: ['Dispositivos adquiridos.', 'Orden de compra/proveedor.', 'Criterios de diagnóstico.'],
+      outputs: ['Ficha de diagnóstico por unidad.', 'Clasificación técnica inicial.', 'Unidades aptas para reacondicionamiento o descarte.'],
+      kpis: ['Tiempo promedio de diagnóstico', '% de unidades aptas para reacondicionamiento', '% de registros con serie/IMEI completo', 'Tasa de fallas detectadas en recepción'],
+      related: ['v1', 'v3', 'v5', 'g3'],
+      importance: 'Evita ingresar equipos inviables al proceso y asegura trazabilidad desde el primer contacto con el dispositivo.'
+    },
+    v3: {
+      macro: 'Procesos Agregadores de Valor', code: 'V3', name: 'Reacondicionamiento y preparación del producto',
+      description: 'Ejecuta las acciones técnicas necesarias para dejar el dispositivo funcional, seguro y presentable para su venta.',
+      objective: 'Restaurar la funcionalidad y presentación del dispositivo cumpliendo criterios técnicos y de seguridad.',
+      activities: ['Realizar limpieza física y mantenimiento.', 'Reparar o reemplazar componentes cuando sea viable.', 'Verificar batería, pantalla, conectividad, botones, cámaras y puertos.', 'Configurar el equipo y realizar pruebas básicas.', 'Ejecutar borrado seguro de datos anteriores.', 'Preparar el dispositivo para control de calidad y comercialización.'],
+      responsible: 'Técnico de reacondicionamiento.',
+      inputs: ['Diagnóstico técnico.', 'Repuestos/herramientas.', 'Procedimientos técnicos y de seguridad.'],
+      outputs: ['Dispositivo reacondicionado.', 'Registro de intervención técnica.', 'Equipo listo para control de calidad.'],
+      kpis: ['Tiempo promedio de reacondicionamiento', 'Costo de reacondicionamiento por unidad', 'Tasa de retrabajo técnico', '% de unidades con borrado seguro certificado'],
+      related: ['v2', 'v4', 'g3', 'a5', 'a8'],
+      importance: 'Es el proceso que transforma un equipo usado en un producto confiable listo para generar valor al cliente.'
+    },
+    v4: {
+      macro: 'Procesos Agregadores de Valor', code: 'V4', name: 'Control de calidad y certificación interna',
+      description: 'Verifica que cada equipo cumpla los estándares de Renova Digital antes de ser publicado o vendido.',
+      objective: 'Asegurar que solo dispositivos funcionales y conforme a criterios internos pasen a inventario comercial.',
+      activities: ['Realizar pruebas finales de funcionamiento.', 'Verificar estado físico, rendimiento y accesorios definidos.', 'Registrar resultados de pruebas por unidad.', 'Clasificar grado/estado comercial del dispositivo.', 'Aprobar, reprocesar o dar de baja el equipo.', 'Liberar unidad para inventario disponible.'],
+      responsible: 'Técnico de reacondicionamiento / Responsable de calidad (puede ser el mismo rol en emprendimiento).',
+      inputs: ['Equipo reacondicionado.', 'Checklist de calidad.', 'Criterios de grado y garantía.'],
+      outputs: ['Unidad aprobada/rechazada.', 'Registro de QA.', 'Estado comercial asignado.'],
+      kpis: ['% de unidades aprobadas en primera revisión', 'Tasa de retrabajo', 'Tasa de rechazo/baja', 'Incidencias de calidad postventa'],
+      related: ['v3', 'v5', 'g3', 'v8'],
+      importance: 'Reduce garantías y reclamos, protegiendo la promesa de confiabilidad de Renova Digital.'
+    },
+    v5: {
+      macro: 'Procesos Agregadores de Valor', code: 'V5', name: 'Gestión de inventario y almacenamiento comercial',
+      description: 'Controla stock, ubicación y estado de cada unidad reacondicionada para garantizar disponibilidad y trazabilidad.',
+      objective: 'Mantener inventario confiable por número de serie/IMEI, evitando pérdidas, duplicidades y ventas sin stock.',
+      activities: ['Registrar unidades aprobadas en inventario.', 'Controlar entradas, salidas, reservas y ventas.', 'Gestionar seriales/IMEI individuales.', 'Clasificar por categoría, marca, modelo, grado y estado.', 'Actualizar estados: disponible, reservado, vendido, en reparación, baja.', 'Realizar conteos y conciliaciones periódicas.'],
+      responsible: 'Responsable de inventario / Administrador.',
+      inputs: ['Unidades aprobadas por QA.', 'Ventas, reservas y devoluciones.', 'Reglas de estado y almacenamiento.'],
+      outputs: ['Inventario actualizado.', 'Disponibilidad real por unidad.', 'Alertas de stock y trazabilidad.'],
+      kpis: ['Exactitud de inventario', 'Rotación de inventario', 'Unidades disponibles por categoría', 'Días promedio de permanencia en stock'],
+      related: ['v4', 'v6', 'v7', 'a4', 'a6'],
+      importance: 'Permite vender con confianza, conocer qué se tiene realmente y responder rápido a clientes y reportes.'
+    },
+    v6: {
+      macro: 'Procesos Agregadores de Valor', code: 'V6', name: 'Marketing, comercialización y ventas',
+      description: 'Conecta la oferta de productos reacondicionados con la demanda del cliente y concreta ventas rentables.',
+      objective: 'Comercializar dispositivos reacondicionados de forma clara, atractiva y rentable, generando confianza en el cliente.',
+      activities: ['Analizar necesidades del cliente y demanda.', 'Mantener información clara de los productos disponibles.', 'Gestionar consultas, cotizaciones y oportunidades.', 'Formalizar ventas y registrar condiciones.', 'Dar seguimiento a clientes interesados.', 'Coordinar la venta según el canal disponible (presencial o contacto directo).'],
+      responsible: 'Responsable comercial / Atención al cliente / Administrador.',
+      inputs: ['Inventario disponible.', 'Precios y políticas comerciales.', 'Leads y consultas de clientes.'],
+      outputs: ['Cotizaciones y ventas.', 'Clientes registrados.', 'Información comercial para seguimiento.'],
+      kpis: ['Número de ventas mensuales', 'Tasa de conversión', 'Ticket promedio', 'Margen por venta'],
+      related: ['g2', 'v5', 'v7', 'v8', 'a2'],
+      importance: 'Genera ingresos y posiciona a Renova Digital como alternativa confiable frente a equipos nuevos.'
+    },
+    v7: {
+      macro: 'Procesos Agregadores de Valor', code: 'V7', name: 'Gestión de pedidos, entrega y distribución',
+      description: 'Asegura que el producto vendido llegue correctamente al cliente, con trazabilidad y confirmación de entrega.',
+      objective: 'Preparar, entregar y registrar pedidos de forma segura, oportuna y trazable.',
+      activities: ['Confirmar pedido y disponibilidad de la unidad.', 'Preparar y verificar el dispositivo antes del despacho.', 'Empacar adecuadamente el producto.', 'Coordinar entrega, envío o retiro.', 'Registrar entrega y evidencia.', 'Confirmar recepción del cliente.'],
+      responsible: 'Responsable logístico / Responsable comercial (según tamaño del emprendimiento).',
+      inputs: ['Venta confirmada.', 'Unidad reservada/disponible.', 'Datos de entrega del cliente.'],
+      outputs: ['Pedido entregado.', 'Registro de entrega.', 'Trazabilidad de salida.'],
+      kpis: ['% de pedidos entregados a tiempo', 'Incidencias de entrega', 'Tiempo de preparación de pedido', 'Tasa de entregas confirmadas'],
+      related: ['v5', 'v6', 'v8', 'a6'],
+      importance: 'Cierra la experiencia de compra; una entrega correcta refuerza la confianza y evita reclamos.'
+    },
+    v8: {
+      macro: 'Procesos Agregadores de Valor', code: 'V8', name: 'Atención al cliente y servicio posventa',
+      description: 'Atiende consultas, garantías y reclamos para resolver problemas y fidelizar clientes.',
+      objective: 'Brindar soporte oportuno antes y después de la venta, protegiendo la satisfacción y confianza del cliente.',
+      activities: ['Atender consultas pre y postventa.', 'Registrar y gestionar casos, reclamos y garantías.', 'Coordinar diagnóstico y solución de devoluciones.', 'Aplicar políticas de cambio, devolución o garantía.', 'Recopilar satisfacción y retroalimentación.', 'Mantener historial de atención por cliente.'],
+      responsible: 'Atención al cliente / Administrador (con apoyo técnico).',
+      inputs: ['Consultas y reclamos.', 'Historial de venta y unidad.', 'Políticas de garantía.'],
+      outputs: ['Casos resueltos.', 'Devoluciones/garantías gestionadas.', 'Retroalimentación para mejora.'],
+      kpis: ['Tiempo promedio de respuesta', 'Tiempo de resolución de casos', '% de reclamos resueltos', 'Satisfacción del cliente (CSAT)'],
+      related: ['v6', 'v7', 'g3', 'g5', 'v9'],
+      importance: 'Sostiene la confianza en productos reacondicionados y convierte problemas en oportunidades de fidelización.'
+    },
+    v9: {
+      macro: 'Procesos Agregadores de Valor', code: 'V9', name: 'Gestión de bajas y recuperación de equipos',
+      description: 'Gestiona los equipos que no pueden comercializarse, registrando bajas, aprovechando componentes viables y definiendo una disposición responsable.',
+      objective: 'Controlar adecuadamente los dispositivos no aptos para venta, reduciendo pérdidas y manteniendo trazabilidad de bajas y recuperaciones.',
+      activities: ['Identificar equipos no aptos para reacondicionamiento o venta.', 'Registrar la causa de baja o no viabilidad por unidad.', 'Aprovechar componentes útiles cuando sea técnicamente viable y seguro.', 'Separar equipos o piezas para disposición responsable.', 'Actualizar el estado del inventario y los registros internos.', 'Coordinar con compras/técnica la información para decisiones de reposición o descarte.'],
+      responsible: 'Técnico de reacondicionamiento / Responsable de inventario / Administrador general.',
+      inputs: ['Diagnósticos técnicos.', 'Unidades rechazadas o en baja.', 'Criterios de calidad y viabilidad.'],
+      outputs: ['Registro de bajas por unidad.', 'Componentes o equipos recuperados cuando aplique.', 'Disposición responsable documentada.'],
+      kpis: ['% de unidades dadas de baja con causa registrada', '% de equipos o componentes recuperados', 'Tiempo de resolución de unidades no viables', 'Pérdida asociada a equipos en baja'],
+      related: ['g5', 'v2', 'v3', 'v4', 'v5'],
+      importance: 'Permite a Renova Digital mantener control sobre equipos no vendibles, reducir pérdidas y conservar trazabilidad en el inventario.'
+    },
+
+    // APOYO
+    a1: {
+      macro: 'Procesos Habilitantes o de Apoyo', code: 'A1', name: 'Gestión administrativa y documental',
+      description: 'Organiza la documentación y soportes administrativos necesarios para la operación del negocio.',
+      objective: 'Garantizar orden, trazabilidad y disponibilidad de documentos comerciales, operativos y administrativos.',
+      activities: ['Organizar documentos de compras, ventas, garantías y proveedores.', 'Gestionar archivos y respaldos documentales.', 'Controlar contratos, acuerdos y procedimientos internos.', 'Mantener registros administrativos actualizados.', 'Apoyar la preparación de informes y soportes.'],
+      responsible: 'Responsable administrativo / Administrador general.',
+      inputs: ['Documentos de operación.', 'Registros del CRM/ERP.', 'Políticas internas.'],
+      outputs: ['Archivo organizado.', 'Soportes disponibles.', 'Control documental.'],
+      kpis: ['% de documentos completos por proceso', 'Tiempo de localización de soportes', 'Cumplimiento de registros administrativos'],
+      related: ['a2', 'a7', 'v1', 'v6'],
+      importance: 'Reduce errores, facilita auditorías internas y respalda decisiones comerciales y financieras.'
+    },
+    a2: {
+      macro: 'Procesos Habilitantes o de Apoyo', code: 'A2', name: 'Gestión financiera y contable',
+      description: 'Administra los recursos económicos, registra movimientos y controla la rentabilidad del negocio.',
+      objective: 'Asegurar control financiero, liquidez y rentabilidad en la operación de Renova Digital.',
+      activities: ['Registrar ingresos, egresos y pagos.', 'Gestionar cuentas por cobrar y por pagar.', 'Controlar caja y flujo de efectivo.', 'Calcular costos de adquisición y reacondicionamiento.', 'Analizar rentabilidad por producto/venta.', 'Elaborar reportes financieros.'],
+      responsible: 'Responsable financiero y administrativo / Administrador general.',
+      inputs: ['Ventas, compras, pagos y gastos.', 'Presupuesto.', 'Datos del ERP.'],
+      outputs: ['Reportes financieros.', 'Control de cartera y pagos.', 'Análisis de rentabilidad.'],
+      kpis: ['Margen de rentabilidad', 'Flujo de caja', '% de cartera vencida', 'Cumplimiento de pagos a proveedores'],
+      related: ['g1', 'g4', 'v1', 'v6', 'a1'],
+      importance: 'Permite saber si el negocio es rentable, mantener liquidez y tomar decisiones de precios y compras.'
+    },
+    a3: {
+      macro: 'Procesos Habilitantes o de Apoyo', code: 'A3', name: 'Gestión del talento humano',
+      description: 'Organiza, capacita y evalúa al personal para asegurar un desempeño adecuado en las áreas clave.',
+      objective: 'Contar con personas competentes y alineadas con los objetivos y valores de Renova Digital.',
+      activities: ['Definir roles y responsabilidades.', 'Seleccionar y vincular personal según necesidad.', 'Capacitar en técnicas de reacondicionamiento, atención y sistemas.', 'Evaluar desempeño y cumplimiento.', 'Promover seguridad, bienestar y buen ambiente laboral.'],
+      responsible: 'Administrador general / Responsable administrativo.',
+      inputs: ['Necesidades del negocio.', 'Perfiles de cargo.', 'Resultados de desempeño.'],
+      outputs: ['Equipo organizado.', 'Capacitaciones realizadas.', 'Evaluaciones y planes de mejora.'],
+      kpis: ['Cumplimiento de capacitaciones', 'Evaluación de desempeño', 'Rotación de personal', 'Incidentes laborales'],
+      related: ['g4', 'v3', 'v6', 'v8'],
+      importance: 'El conocimiento técnico y comercial del equipo impacta directamente la calidad del producto y la experiencia del cliente.'
+    },
+    a4: {
+      macro: 'Procesos Habilitantes o de Apoyo', code: 'A4', name: 'Gestión tecnológica y sistemas de información',
+      description: 'Administra las herramientas digitales que soportan la operación, ventas, inventario y datos de la empresa.',
+      objective: 'Garantizar que la web, CRM, ERP y datos operen de forma segura, disponible y confiable.',
+      activities: ['Administrar la página web y el sistema interno.', 'Gestionar CRM, ERP y base de datos.', 'Controlar usuarios, accesos y permisos.', 'Realizar respaldos y mantenimiento básico.', 'Asegurar integridad y seguridad de la información.', 'Dar soporte a incidencias tecnológicas.'],
+      responsible: 'Responsable de tecnología / Administrador general (con apoyo externo si aplica).',
+      inputs: ['Requerimientos de áreas.', 'Incidentes del sistema.', 'Políticas de seguridad.'],
+      outputs: ['Sistemas disponibles.', 'Respaldos y controles de acceso.', 'Datos confiables para operación y reportes.'],
+      kpis: ['Disponibilidad del sistema', 'Tiempo de resolución de incidentes', 'Cumplimiento de respaldos', 'Errores/incidencias de datos'],
+      related: ['v5', 'v6', 'a8', 'g4'],
+      importance: 'Sostiene la trazabilidad por serie, la gestión comercial y la información financiera necesaria para decidir.'
+    },
+    a5: {
+      macro: 'Procesos Habilitantes o de Apoyo', code: 'A5', name: 'Gestión de infraestructura y recursos físicos',
+      description: 'Provee y mantiene el espacio, herramientas y recursos físicos necesarios para reacondicionar y almacenar equipos.',
+      objective: 'Disponer de infraestructura adecuada y segura para la operación técnica y logística.',
+      activities: ['Administrar herramientas técnicas y equipos de trabajo.', 'Mantener instalaciones y estaciones de trabajo.', 'Organizar espacios de recepción, reacondicionamiento y almacenamiento.', 'Controlar recursos físicos y mobiliario.', 'Asegurar condiciones adecuadas de almacenamiento.'],
+      responsible: 'Responsable operativo / Administrador general.',
+      inputs: ['Necesidades operativas.', 'Inventario de activos físicos.', 'Plan de mantenimiento.'],
+      outputs: ['Infraestructura operativa.', 'Espacios organizados.', 'Recursos disponibles.'],
+      kpis: ['Disponibilidad de herramientas/equipos', 'Cumplimiento de mantenimiento', 'Incidentes por infraestructura', 'Orden/capacidad de almacenamiento'],
+      related: ['v2', 'v3', 'v5', 'a6'],
+      importance: 'Sin espacio y herramientas adecuadas, el reacondicionamiento y el control de inventario pierden eficiencia y calidad.'
+    },
+    a6: {
+      macro: 'Procesos Habilitantes o de Apoyo', code: 'A6', name: 'Gestión logística y soporte operativo',
+      description: 'Coordina la recepción, preparación y entrega de dispositivos para asegurar una operación ordenada.',
+      objective: 'Apoyar la recepción, almacenamiento y entrega de dispositivos de forma ordenada y segura.',
+      activities: ['Coordinar recepción y salida de equipos.', 'Preparar y proteger los dispositivos para entrega o retiro.', 'Apoyar la organización del inventario físico.', 'Coordinar entregas o retiros con el cliente.', 'Registrar movimientos y novedades de entrega.'],
+      responsible: 'Responsable logístico / Responsable operativo.',
+      inputs: ['Pedidos, compras y entregas programadas.', 'Materiales básicos de protección/embalaje.', 'Disponibilidad de inventario.'],
+      outputs: ['Entregas coordinadas.', 'Movimientos logísticos registrados.', 'Productos protegidos.'],
+      kpis: ['% de entregas a tiempo', 'Incidencias en entrega o retiro', 'Tiempo de preparación de pedido', 'Pedidos entregados con registro completo'],
+      related: ['v1', 'v5', 'v7', 'a5'],
+      importance: 'Asegura que los equipos se muevan de forma segura y puntual, reduciendo daños y retrasos.'
+    },
+    a7: {
+      macro: 'Procesos Habilitantes o de Apoyo', code: 'A7', name: 'Gestión legal y cumplimiento normativo',
+      description: 'Asegura que la operación comercial cumpla obligaciones legales, tributarias, de garantías y protección al consumidor.',
+      objective: 'Reducir riesgos legales y garantizar prácticas comerciales transparentes y conforme a la normativa.',
+      activities: ['Cumplir obligaciones legales y tributarias.', 'Definir y aplicar políticas de garantía, cambio y devolución.', 'Asegurar cumplimiento de normativa de protección al consumidor.', 'Revisar términos comerciales y documentación.', 'Gestionar soporte ante incidencias legales o reclamaciones.'],
+      responsible: 'Administrador general / Asesor externo legal o contable según necesidad.',
+      inputs: ['Normativa vigente.', 'Políticas comerciales.', 'Casos de reclamos/garantías.'],
+      outputs: ['Políticas actualizadas.', 'Cumplimiento normativo.', 'Reducción de riesgo legal.'],
+      kpis: ['Cumplimiento de obligaciones legales/tributarias', 'Reclamaciones legales recibidas', 'Actualización de políticas de garantía', 'Casos resueltos conforme a política'],
+      related: ['g3', 'v8', 'a1', 'a2'],
+      importance: 'Protege a la empresa y al cliente, especialmente en garantías, datos personales y condiciones comerciales.'
+    },
+    a8: {
+      macro: 'Procesos Habilitantes o de Apoyo', code: 'A8', name: 'Seguridad y gestión de información',
+      description: 'Protege los datos de clientes, la información empresarial y la información contenida en dispositivos recibidos.',
+      objective: 'Garantizar confidencialidad, integridad y disponibilidad de la información y el borrado seguro de datos.',
+      activities: ['Controlar permisos y accesos a sistemas.', 'Proteger datos de clientes y de la empresa.', 'Aplicar borrado seguro de datos en equipos recibidos.', 'Realizar respaldos y controles de seguridad.', 'Prevenir pérdida, alteración o acceso no autorizado.'],
+      responsible: 'Responsable de tecnología / Administrador general.',
+      inputs: ['Políticas de seguridad.', 'Usuarios y roles del sistema.', 'Dispositivos recibidos para reacondicionamiento.'],
+      outputs: ['Accesos controlados.', 'Datos protegidos.', 'Evidencia de borrado seguro.'],
+      kpis: ['% de equipos con borrado seguro verificado', 'Incidentes de seguridad', 'Cumplimiento de respaldos', 'Usuarios con permisos correctos'],
+      related: ['a4', 'v2', 'v3', 'g3', 'a7'],
+      importance: 'Es crítico para la confianza del cliente y para evitar riesgos por datos personales remanentes en dispositivos reacondicionados.'
+    }
+  };
+
+  const macroNames = {
+    g: 'Procesos de Gobierno', v: 'Procesos Agregadores de Valor', a: 'Procesos Habilitantes o de Apoyo'
+  };
+
+  const modal = document.getElementById('mgModal');
+  const modalTitle = document.getElementById('mgModalTitle');
+  const modalMacro = document.getElementById('mgModalMacro');
+  const modalBody = document.getElementById('mgModalBody');
+
+  function renderList(items) { return '<ul>' + items.map(i => '<li>' + escapeHtml(i) + '</li>').join('') + '</ul>'; }
+  function escapeHtml(s) { return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+  let lastFocus = null;
+  function openProcess(id) {
+    const p = processes[id];
+    if (!p) return;
+    lastFocus = document.activeElement;
+    modalMacro.textContent = p.macro + ' · ' + p.code;
+    modalTitle.textContent = p.name;
+    modalBody.innerHTML = `
+      <p class="mg-detail-desc">${escapeHtml(p.description)}</p>
+      <div class="mg-detail-grid">
+        <div class="mg-detail-box"><h3>Objetivo</h3><p>${escapeHtml(p.objective)}</p></div>
+        <div class="mg-detail-box"><h3>Responsable sugerido</h3><p>${escapeHtml(p.responsible)}</p></div>
+        <div class="mg-detail-box mg-detail-wide"><h3>Actividades principales</h3>${renderList(p.activities)}</div>
+        <div class="mg-detail-box"><h3>Entradas</h3>${renderList(p.inputs)}</div>
+        <div class="mg-detail-box"><h3>Resultados / Salidas</h3>${renderList(p.outputs)}</div>
+        <div class="mg-detail-box mg-detail-wide"><h3>Indicadores de gestión (KPI) propuestos</h3><div class="mg-kpis">${p.kpis.map(k=>`<span class="mg-kpi">${escapeHtml(k)}</span>`).join('')}</div></div>
+        <div class="mg-detail-box mg-detail-wide"><h3>Procesos relacionados</h3><div class="mg-related">${p.related.map(r=>{const rp=processes[r]; return rp?`<button type="button" class="mg-rel-btn" data-process="${r}">${escapeHtml(rp.code + ' - ' + rp.name)}</button>`:'';}).join('')}</div></div>
+        <div class="mg-detail-box mg-detail-wide"><h3>Importancia para Renova Digital</h3><p>${escapeHtml(p.importance)}</p></div>
+      </div>`;
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    const closeBtn = modal.querySelector('.mg-close');
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+  }
+
+  const macros = {
+    gobierno: { name:'Procesos de Gobierno', code:'Nivel superior', color:'gov', description:'Establecen la dirección estratégica, definen objetivos, controlan resultados, gestionan riesgos y promueven la mejora continua de Renova Digital.', keys:['g1','g2','g3','g4','g5'] },
+    valor: { name:'Procesos Agregadores de Valor', code:'Nivel central', color:'val', description:'Conforman la cadena de valor que transforma dispositivos adquiridos en productos reacondicionados, comercializados y respaldados para el cliente.', keys:['v1','v2','v3','v4','v5','v6','v7','v8','v9'] },
+    apoyo: { name:'Procesos Habilitantes o de Apoyo', code:'Nivel inferior', color:'sup', description:'Proporcionan recursos humanos, financieros, tecnológicos, administrativos, logísticos, legales y de seguridad para habilitar la operación de Renova Digital.', keys:['a1','a2','a3','a4','a5','a6','a7','a8'] }
+  };
+
+  function openMacro(id) {
+    const m = macros[id];
+    if (!m) return;
+    lastFocus = document.activeElement;
+    modalMacro.textContent = m.code + ' · Macroproceso';
+    modalTitle.textContent = m.name;
+    const cards = m.keys.map(k => { const p = processes[k]; if(!p) return ''; return `
+      <div class="mg-detail-box mg-detail-wide">
+        <h3>${escapeHtml(p.code + ' - ' + p.name)}</h3>
+        <p style="margin-bottom:8px">${escapeHtml(p.description)}</p>
+        <p><strong>Objetivo:</strong> ${escapeHtml(p.objective)}</p>
+        <p><strong>Responsable:</strong> ${escapeHtml(p.responsible)}</p>
+        <div style="margin-top:8px"><button type="button" class="mg-rel-btn" data-process="${k}">Abrir ficha completa</button></div>
+      </div>`; }).join('');
+    modalBody.innerHTML = `
+      <p class="mg-detail-desc">${escapeHtml(m.description)}</p>
+      <div class="mg-detail-grid">${cards}</div>`;
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+    const closeBtn = modal.querySelector('.mg-close');
+    if (closeBtn) closeBtn.focus();
+  }
+
+  document.addEventListener('click', function (e) {
+    const macroBtn = e.target.closest('[data-macro]');
+    if (macroBtn) { e.preventDefault(); openMacro(macroBtn.getAttribute('data-macro')); return; }
+    const jumpBtn = e.target.closest('[data-jump]');
+    if (jumpBtn) { e.preventDefault(); openProcess(jumpBtn.getAttribute('data-jump')); return; }
+    const procBtn = e.target.closest('[data-process]');
+    if (procBtn) { e.preventDefault(); openProcess(procBtn.getAttribute('data-process')); return; }
+    if (e.target.closest('[data-mg-close]')) { closeModal(); return; }
+    const bandToggle = e.target.closest('[data-toggle-band]');
+    if (bandToggle) {
+      const band = bandToggle.closest('.mg-band');
+      const expanded = bandToggle.getAttribute('aria-expanded') === 'true';
+      bandToggle.setAttribute('aria-expanded', String(!expanded));
+      band.classList.toggle('collapsed', expanded);
+    }
+    const expandBtn = e.target.closest('[data-mg-expand]');
+    if (expandBtn) {
+      const mode = expandBtn.getAttribute('data-mg-expand');
+      document.querySelectorAll('.mg-band').forEach(b => {
+        const t = b.querySelector('[data-toggle-band]');
+        const collapse = mode === 'none';
+        b.classList.toggle('collapsed', collapse);
+        if (t) t.setAttribute('aria-expanded', String(!collapse));
+      });
+    }
+  });
+
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
+})();
+
+
+
+
+</script>
+</body></html>
+
+
+
